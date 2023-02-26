@@ -43,177 +43,102 @@ ES6 声明变量的六种方法: ES6 除了添加let和const命令，后面章�
 
 1. 允许重复的变量声明：导致数据被覆盖
 
-```js
-var a = 1;
-
-function print() {
-  console.log(a);
-}
-
-// 假设这里有一千行代码
-
-var a = 2;
-
-print();
-```
+    ```js
+    var a = 1;
+    function print() {
+    console.log(a);
+    }
+    // 假设这里有一千行代码
+    var a = 2;
+    print();
+    ```
 
 2. 变量提升
 
 + 怪异的数据访问
 
-```js
-if (Math.random() < 0.5) {
-    var a = "abc";
+    ```js
+    if (Math.random() < 0.5) {
+        var a = "abc";
+        console.log(a);
+    } else {
+        console.log(a);
+    }
     console.log(a);
-} else {
-    console.log(a);
-}
-console.log(a);
-```
+    ```
 
 + 闭包问题
 
-```js
-var div = document.getElementById("divButtons")
+    ```js
+    var div = document.getElementById("divButtons")
 
-for (var i = 1; i <= 10; i++) {
-    var btn = document.createElement("button");
-    btn.innerHTML = "按钮" + i;
-    div.appendChild(btn);
-    btn.onclick = function () {
-        console.log(i); //输出11
+    for (var i = 1; i <= 10; i++) {
+        var btn = document.createElement("button");
+        btn.innerHTML = "按钮" + i;
+        div.appendChild(btn);
+        btn.onclick = function () {
+            console.log(i); //输出11
+        }
     }
-}
 
-// 循环结束后，i：11
-```
+    // 循环结束后，i：11
+    ```
 
 3. 全局变量挂载到全局对象：全局对象成员污染问题
 
-```js
-var abc = "123";
-console.log(window.abc);
+    ```js
+    var abc = "123";
+    console.log(window.abc);
 
-var console = "abc"; // 直接就把 window 的 console 覆盖了
+    var console = "abc"; // 直接就把 window 的 console 覆盖了
 
-console.log(console) // 直接报错，console.log 不能用了
+    console.log(console) // 直接报错，console.log 不能用了
 
-```
-
-# let命令
-## 基本用法
-+ for循环有一个特别之处，就是设置循环变量的那部分是一个父作用域，而循环体内部是一个单独的子作用域
-```js
-for(let i = 0; i < 5; i ++) {
-    let i = 'abc';
-    console.log(i);
-}
-```
-上述代码正确运行，输出了3次'abc'。这表明函数内部的变量i与循环变量i不在同一个作用域，有各自单独的作用域
-
-##### 不存在变量提升
-```js
-console.log(a);
-let a = 123;
-
-// Uncaught ReferenceError: Cannot access 'a' before initialization
-```
-
-##### 暂时性死区（temporal dead zone，简称 TDZ）
-
-##### ES6 明确规定，如果区块中存在let和const命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。
-
- ```js
- var tem = 123;
- if(true) {
-     console.log(tem);  //同上述一样的引用错误，报错也是一样的
-     let tem = 'abc';
- }
- ```
-
- ```js
- var parent = 'gu';
- if(true) {
-     parent = 'wang';
-     child = 'cheng';  //只有child这个变量存在暂时性死区
-     let child = 'fie';
- }
- ```
-
- ##### 用 typeof就会报错
- ```js
- typeof a; //报错
- let a = 123;
- ```
-
- ##### 有些‘死区’比较隐蔽，不容易被发现
- ```js
- function bar(x = y, y = 2) {  //报错内容和上述一样
-     return [x, y];
- }
- bar();
- ```
-
-##### 不存在重复声明
-```js
-let a = 123;
-let a = 456;  //Uncaught SyntaxError: Identifier 'a' has already been declared
-```
-
-##### 不能在函数内部重复声明参数
-```js
-function fun(arg) {
-    let arg; //Uncaught SyntaxError: Identifier 'arg' has already been declared
-}
-fun();
-```
+    ```
 
 ## 块级作用域
++ 代码执行时遇到花括号，会创建一个块级作用域，花括号结束，销毁块级作用域
+  ```js
+    let a = 123; // 全局作用于定义a
+    {
+        let a = 546; // 块级作用域定义a
+        console.log(a); // 546
+    }
+    console.log(a) // 123
+  ```
+
+  ```js
+    function f1() {
+        let n = 5;
+        if(true) {
+            let n = 10;
+        }
+        console.log(n); //5
+    }
+    f1();
+  ```
 + let实际上是为JavaScript新增了块级作用域
 + let关键字可以将变量绑定到所在的任意作用域中（通常是{ .. }内部）
 + 块级作用域的出现使得获得广泛应用的匿名立即执行函数表达式（匿名IIFE）不再必要了
 + 有作用域链
-```js
-var tem = new Date();
-function f() {
-    console.log(tem);  //undefined
-    if(false) {
-        var tem = 'hello world';
-    }
-}
-f();  
-```
-
-
-```js
-function f1() {
-    let n = 5;
-    if(true) {
-        let n = 10;
-    }
-    console.log(n); //5
-}
-f1();
-```
-
 + ES6允许块级作用域的任意嵌套
-```js
-{{{{
-    {
-        let insane = 'hello world'
-    }
-    console.log(insane); //报错 insane is not defined
-}}}}
-```
-上面代码使用了一个五层的块级作用域，每一层都是一个单独的作用域。第四层作用域无法读取第五层作用域的内部变量
+    ```js
+    {{{{
+        {
+            let insane = 'hello world'
+        }
+        console.log(insane); //报错 insane is not defined
+    }}}}
+    ```
+    上面代码使用了一个五层的块级作用域，每一层都是一个单独的作用域。第四层作用域无法读取第五层作用域的内部变量
 
 + 内层作用域可以定义外层作用域相同的变量名
-```js
-{{{{
-    let insane = 'Hello World';
-    {let insane = 'Hello World'}
-}}}}
-```
+    ```js
+    {{{{
+        let insane = 'Hello World';
+        {let insane = 'Hello World'}
+    }}}}
+    ```
 ## 块级作用域与函数声明
 在es5中运行不会报错，在es6中会。
 ```js
@@ -229,6 +154,82 @@ function f() {
     f();  //f is not a function
 })();
 ```
+
+# let命令
+## 基本用法
++ for循环有一个特别之处，就是设置循环变量的那部分是一个父作用域，而循环体内部是一个单独的子作用域。在循环中，用let声明的循环变量，会特殊处理，每次进入循环体，都会开启一个新的作用域，并且将循环变量绑定到该作用域（每次循环，使用的是一个全新的循环变量）。在循环中使用let声明的循环变量，在循环结束后会销毁
+    ```js
+    for(let i = 0; i < 5; i ++) {
+        let i = 'abc';
+        console.log(i); // abc 使用的是当前作用域中的i
+    }
+    ```
+    上述代码正确运行，输出了3次'abc'。这表明函数内部的变量i与循环变量i不在同一个作用域，有各自单独的作用域
+
+    ```js
+    // Uncaught ReferenceError: Cannot access 'i' before initialization
+    for(let i = 0; i < 5; i ++) {
+        console.log(i); // 使用的是当前作用域中的i
+        let i = 'abc';
+    }
+    ```
+
++ let 声明的变量不会挂载到全局对象上
++ 不存在变量提升
+    ```js
+    console.log(a);
+    let a = 123;
+
+    // Uncaught ReferenceError: Cannot access 'a' before initialization 不能在初始化之前使用a
+    ```
+    这里有个小细节，报错信息并不是**a没有被定义，而是不能在初始化之前使用**。在底层实现上，let 和 const 声明的变量也会有提升，但是提升后会将其放到**暂时性死去**，如果访问的变量位于暂时性死区，则会报错：“Cannot access 'a' before initialization”。当代码运行到该变量的声明语句时，会将其从暂时性死区中移除。
++ 暂时性死区（temporal dead zone，简称 TDZ）
+  + ES6 明确规定，如果区块中存在let和const命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。
+  + 有些‘死区’比较隐蔽，不容易被发现
+
+    ```js
+    var tem = 123;
+    if(true) {
+        console.log(tem);  // Uncaught ReferenceError: Cannot access 'tem' before initialization 不能在初始化之前使用a
+        let tem = 'abc';
+    }
+    ```
+
+    ```js
+    var parent = 'gu';
+    if(true) {
+        parent = 'wang';
+        child = 'cheng';  //只有child这个变量存在暂时性死区
+        let child = 'fie';
+    }
+    ```
+
+    ```js
+    function bar(x = y, y = 2) {  //报错内容和上述一样
+        return [x, y];
+    }
+    bar();
+    ```
+
++ 用 typeof就会报错
+    ```js
+    typeof a; //报错
+    let a = 123;
+    ```
+
++ 在同一个作用域内不能重复声明
+    ```js
+    let a = 123;
+    let a = 456;  //Uncaught SyntaxError: Identifier 'a' has already been declared
+    ```
+
++ 不能在函数内部重复声明参数
+    ```js
+    function fun(arg) {
+        let arg; //Uncaught SyntaxError: Identifier 'arg' has already been declared
+    }
+    fun();
+    ```
 
 ## const命令
 ##### 声明常量
