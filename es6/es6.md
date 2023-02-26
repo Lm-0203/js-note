@@ -156,7 +156,7 @@ function f() {
 ```
 
 # let命令
-## 基本用法
+
 + for循环有一个特别之处，就是设置循环变量的那部分是一个父作用域，而循环体内部是一个单独的子作用域。在循环中，用let声明的循环变量，会特殊处理，每次进入循环体，都会开启一个新的作用域，并且将循环变量绑定到该作用域（每次循环，使用的是一个全新的循环变量）。在循环中使用let声明的循环变量，在循环结束后会销毁
     ```js
     for(let i = 0; i < 5; i ++) {
@@ -231,39 +231,57 @@ function f() {
     fun();
     ```
 
-## const命令
-##### 声明常量
+# const命令
+
++ 声明常量
     - 改变常量的值会报错 TypeError: Assignment to constant variable
-##### 只声明不赋值，会报错
-```js
-const foo;
-//SyntaxError: Missing initializer in const declaration
-```
-+ 与let相同，只在声明所在的块作用域内有效
-+ const声明的常量不提升，同样存在暂时性死区，只能在声明的位置后面使用。
++ 只声明不赋值，会报错
+    ```js
+    const foo;
+    //SyntaxError: Missing initializer in const declaration
+    ```
++ const和let完全相同，仅在于用const声明的变量，必须在声明时赋值，而且不可以重新赋值。
 + 不可重复声明
-+ 对于原始值来说，保证值是固定的，对于引用值来说，指针是固定的（总是指向一个固定的地址）
++ 对于原始值来说，保证值是固定的，对于引用值来说，指针是固定的（总是指向一个固定的地址）。常量不可变，是指声明的常量的内存空间不可变，并不保证内存空间中的地址指向的其他空间不可变。
++ 将对象冻结
+    ```js
+    const foo = Object.freeze({});
 
-##### 将对象冻结
-```js
-const foo = Object.freeze({});
+    //常规模式下，下面一行不起作用
+    //严格模式下，该行会报错
+    foo.prop = 123;
+    ```
 
-//常规模式下，下面一行不起作用
-//严格模式下，该行会报错
-foo.prop = 123;
-```
-
-##### 除了将对象本身冻结，对象的属性也应该冻结。
-```js
-var constantize = (obj) => {
-    Object.freeze(obj);
-    Object.keys(obj).forEach(key, i) => {
-        if(typeof obj[key] === 'object') {
-            constantize(obj[key])
++ 除了将对象本身冻结，对象的属性也应该冻结。
+    ```js
+    var constantize = (obj) => {
+        Object.freeze(obj);
+        Object.keys(obj).forEach(key, i) => {
+            if(typeof obj[key] === 'object') {
+                constantize(obj[key])
+            }
         }
     }
-}
-```
+    ```
++ 在for循环中，循环变量不可以使用常量，for in 循环可以
+    ```js
+    var obj = {
+        name:"kevin",
+        age:1
+    }
+
+    for (const prop in obj) {
+        console.log(prop)
+    }
+    ```
++ 常量的命名
+  + 特殊的常量：该常量从字面意义上，一定是不可变的，比如圆周率、月地距地或其他一些绝不可能变化的配置。通常，**该常量的名称全部使用大写，多个单词之间用下划线分割**
+  + 普通的常量：使用和之前一样的命名即可
+
+实际上，在开发中，应该尽量使用const来声明变量，以保证变量的值不会随意篡改，原因如下：
+
+1. 根据经验，开发中的很多变量，都是不会更改，也不应该更改的。
+2. 后续的很多框架或者是第三方JS库，都要求数据不可变，使用常量可以一定程度上保证这一点。
 
 # 解构
 
