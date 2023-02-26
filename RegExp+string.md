@@ -124,11 +124,26 @@ var str2 = 'fdk\tad';
 
 ## 修饰符：
 
-### i  （不区分大小写）
++ i : 不区分大小写
 
-### m  (多行匹配)
++ m : 多行匹配
 
-### g    (全局匹配)
++ g : 全局匹配
+
++ y : 匹配时，完全按照正则对象中的lastIndex位置开始匹配，并且匹配的位置必须在lastIndex位置。
+  
+  ```js
+  const text = "Hello World";
+  const reg = /W\w+/;
+  console.log(reg.test(text)); // true
+
+  const reg1 = /W\w+/y;
+  console.log(reg1.test(text)); // false
+
+  reg1.lastIndex = 6;
+  console.log(reg1.test(text)); // true
+
+  ```
 
 可以一起使用，也可以自由匹配
 
