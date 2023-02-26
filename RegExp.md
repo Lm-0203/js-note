@@ -526,3 +526,62 @@ str = str.replace(/(?=\B)(?=(\d{3})+)$/g, ',')  // "10000333388"
 console.log(str);
 ```
 
+### 字符串和正则表达式
+
+#### 更好的Unicode支持
+
+早期，由于存储空间宝贵，Unicode使用16位二进制来存储文字。我们将一个16位的二进制编码叫做一个码元（Code Unit）。
+
+16位二进制，2的16次方，最多保存65536个文字。
+
+后来，由于技术的发展，Unicode对文字编码进行了扩展，将某些文字扩展到了32位（2的32次方，占用两个码元），并且，将某个文字对应的二进制数字叫做码点（Code Point）。这就导致有些文字会占用两个码元，有些文字占一个码元。
+
+ES6为了解决这个困扰，为字符串提供了方法：codePointAt，根据字符串码元的位置得到其码点。
+
+同时，ES6为正则表达式添加了一个flag: u，如果添加了该配置，则匹配时，使用码点匹配
+
+```js
+const text = "𠮷"; //占用了两个码元（32位）
+
+console.log("字符串长度：", text.length); // 2 js取字符串长度是按照码元来取的。
+console.log("使用正则测试：", /^.$/.test(text)); // false 正则表达式也是按照码元来匹配的。这段正则是匹配任意一个字符，但是 𠮷 看着是一个字，但是是两个字符，或者两个码元。
+console.log("使用正则测试：", /^.$/u.test(text)); // true 加了flag：u，使用码点匹配
+
+console.log("得到第一个码元：", text.charCodeAt(0));
+console.log("得到第二个码元：", text.charCodeAt(1));
+
+//𠮷：\ud842\udfb7
+console.log("得到第一个码点：", text.codePointAt(0));
+console.log("得到第二个码点：", text.codePointAt(1));
+
+/**
+ * 判断字符串char，是32位，还是16位
+ * @param {*} char 
+ */
+function is32bit(char, i) {
+    //如果码点大于了16位二进制的最大值，则其是32位的
+    return char.codePointAt(i) > 0xffff;
+}
+console.log("𠮷是否是32位的：", is32bit("𠮷", 0))
+
+
+/**
+ * 得到一个字符串码点的真实长度
+ * @param {*} str 
+ */
+function getLengthOfCodePoint(str) {
+    var len = 0;
+    for (let i = 0; i < str.length; i++) {
+        //i在索引码元
+        if (is32bit(str, i)) {
+            //当前字符串，在i这个位置，占用了两个码元
+            i++;
+        }
+        len++;
+    }
+    return len;
+}
+
+console.log("ab𠮷ab的码点长度：", getLengthOfCodePoint("ab𠮷ab"))
+```
+
