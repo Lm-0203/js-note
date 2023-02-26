@@ -125,11 +125,10 @@ var str2 = 'fdk\tad';
 ## 修饰符：
 
 + i : 不区分大小写
-
 + m : 多行匹配
-
 + g : 全局匹配
-
++ u : 使用 unicode 码的模式进行匹配。
++ s : 允许 . 匹配换行符。
 + y : 匹配时，完全按照正则对象中的lastIndex位置开始匹配，并且匹配的位置必须在lastIndex位置。
   
   ```js
@@ -629,3 +628,112 @@ console.log("ab𠮷ab的码点长度：", getLengthOfCodePoint("ab𠮷ab"))
   const text = "成哥是狠人";
   console.log("重复4次：", text.repeat(4));
   ```
+
+# 模板字符串
+
+ES6之前处理字符串繁琐的两个方面：
+
+1. 多行字符串
+2. 字符串拼接
+
+在ES6中，提供了模板字符串的书写，可以非常方便的换行和拼接，要做的，仅仅是将字符串的开始或结尾改为 ` 符号
+
+如果要在字符串中拼接js表达式，只需要在模板字符串中使用```${JS表达式}```
+
+```js
+var love1 = "秋葵";
+var love2 = "香菜";
+
+var text = `邓哥喜欢${love1}
+邓哥也喜欢${love2}
+表达式可以是任何有意义的数据${1 + 3 * 2 / 0.5}
+表达式是可以嵌套的：${`表达式中的模板字符串${love1 + love2}`}
+\n\n
+奥布瓦的发顺丰
+在模板字符串中使用\${JS表达式}可以进行插值
+`;
+
+console.log(text);
+```
+
+# 带标签的模板字符串
+
+更高级的形式的模板字符串是带标签的模板字符串。标签使您可以用函数解析模板字符串。标签函数的第一个参数包含一个字符串值的数组。其余的参数与表达式相关。最后，你的函数可以返回处理好的的字符串（或者它可以返回完全不同的东西 , 如下个例子所述）。用于该标签的函数的名称可以被命名为任何名字。
+
+在模板字符串书写之前，可以加上标记:
+
+标记是一个函数，函数参数如下：
+
+1. 参数1：被插值分割的字符串数组
+2. 后续参数：所有的插值
+
+```js
+var love1 = "秋葵";
+var love2 = "香菜";
+
+// 标记名`模板字符串` -> 这么写就相当于 myTag 函数的调用
+var text = myTag`邓哥喜欢${love1}，邓哥也喜欢${love2}。`;
+
+//相当于： 
+// text = myTag(["邓哥喜欢", "，邓哥也喜欢", "。"], "秋葵", "香菜")
+
+// 标记名需要自己定义
+function myTag(parts) {
+    const values = Array.prototype.slice.apply(arguments).slice(1);
+    let str = "";
+    for (let i = 0; i < values.length; i++) {
+        str += `${parts[i]}：${values[i]}`;
+        if (i === values.length - 1) {
+            str += parts[i + 1];
+        }
+    }
+    return str;
+}
+
+console.log(text);
+
+```
+
+# String.row
+
+使用String.raw() 用来获取一个模板字符串的原始字符串的
+
+```js
+String.raw`Hi\n${2+3}!`; // 'Hi\\n5!'
+
+let name = "Bob";
+String.raw `Hi\n${name}!`; // 'Hi\\nBob!'
+
+String.raw`abc\t\nbcd`; // 'abc\\t\\nbcd'
+```
+
+```js
+const container = document.getElementById("container");
+const txt = document.getElementById("txt");
+const btn = document.getElementById("btn");
+
+btn.onclick = function(){
+    container.innerHTML = safe`<p>
+        ${txt.value}
+    </p>
+    <h1>
+        ${txt.value}
+    </h1>
+    `;
+}
+
+function safe(parts){
+    const values = Array.prototype.slice.apply(arguments).slice(1);
+    let str = "";
+    for (let i = 0; i < values.length; i++) {
+        const v = values[i].replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        str += parts[i] + v;
+        if (i === values.length - 1) {
+            str += parts[i + 1];
+        }
+    }
+    return str;
+}
+```
+
+
