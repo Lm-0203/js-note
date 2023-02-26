@@ -283,6 +283,71 @@ function f() {
 1. 根据经验，开发中的很多变量，都是不会更改，也不应该更改的。
 2. 后续的很多框架或者是第三方JS库，都要求数据不可变，使用常量可以一定程度上保证这一点。
 
+# 函数 -> es6对函数的支持
+
+## 参数默认值
+
+在书写形参时，直接给形参赋值，附的值即为默认值
+
+这样一来，当调用函数时，如果没有给对应的参数赋值（给它的值是undefined），则会自动使用默认值。
+
+### 参数默认值对arguments的影响
+
+在严格模式下，arguments和形参是脱离的，也就是说arguments的值和形参不统一
+
+只要给函数加上参数默认值，该函数会自动变量严格模式下的规则：arguments和形参脱离
+
+所以有默认值的时候，arguments和形参不要混用
+
++ 有默认值
+    ```js
+    function test(a, b = 1) {
+    console.log("arugments", arugments); // [1, 2]
+    console.log("a:", a, "b:", b); // a: 1 b: 2
+    a = 3;
+    console.log("arugments", arguments[0], arguments[1]); // [1, 2]
+    console.log("a:", a, "b:", b); // a: 3 b: 2
+    }
+
+    test(1, 2);
+    ```
+
++ 没有默认值
+    ```js
+    function test(a, b) {
+    console.log("arugments", arugments); // [1, 2]
+    console.log("a:", a, "b:", b); // a: 1 b: 2
+    a = 3;
+    console.log("arugments", arguments[0], arguments[1]); // [3, 2]
+    console.log("a:", a, "b:", b); // a: 3 b: 2
+    }
+
+    test(1, 2);
+    ```
+
+
+### 留意暂时性死区
+
+形参和ES6中的let或const声明一样，具有作用域，并且根据参数的声明顺序，存在暂时性死区。
+
+```js
+function test(a = b, b) {
+    console.log(a, b);
+}
+
+test(undefined, 2); // Uncaught ReferenceError: Cannot access 'b' before initialization
+```
+
+```js
+function test(a, b = a) {
+    console.log(a, b);
+}
+
+test(undefined, 2); // undefined 2
+
+test(2); // 2, 2
+```
+
 # 解构
 
 ES6允许按照一定的模式，从数组和对象中，对变量进行赋值，这被称为解构（Destructuring）

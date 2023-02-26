@@ -8,7 +8,12 @@
   </head>
   <body>
     <script>
-      var str = "等个几分钟\然后就下课";
+      function test(a, b = a) {
+        console.log(a, b);
+      }
+
+      test(undefined, 2);
+      test(2)
     </script>
   </body>
 </html>
