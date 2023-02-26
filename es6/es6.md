@@ -1,6 +1,3 @@
-ES6 声明变量的六种方法:
-ES5 只有两种声明变量的方法：var命令和function命令。ES6 除了添加let和const命令，后面章节还会提到，另外两种声明变量的方法：import命令和class命令。所以，ES6 一共有 6 种声明变量的方法。
-
 # ES6 课程概述
 
 ECMAScript、JavaScript、NodeJs，它们的区别是什么？
@@ -22,7 +19,8 @@ ECMAScript、JavaScript、NodeJs，它们的区别是什么？
 | es5    | 全局作用域和函数作用域 |
 | es6    | 块级作用域             |
 
-
+ES5 只有两种声明变量的方法：var命令和function命令。
+ES6 声明变量的六种方法: ES6 除了添加let和const命令，后面章节还会提到，另外两种声明变量的方法：import命令和class命令。所以，ES6 一共有 6 种声明变量的方法。
 
 | 定义（声明）变量 | 定义的变量是否提升 | 在同一个作用域内，是否可以重复定义 | 变量定义后，是否可以修改                                               |
 | ---------------- | ------------------ | ---------------------------------- | ---------------------------------------------------------------------- |
@@ -40,6 +38,67 @@ ECMAScript、JavaScript、NodeJs，它们的区别是什么？
 + let 和 const 声明的变量不会挂载到window 上面，var 声明的变量会挂载到window上面，全局变量是window的属性，全局函数是window的方法
 + let 和 var 可以先声明再赋值，const 不行
 + const 简单类型一旦声明就不能再更改，对于引用数据类型（对象，数组）来说的话，指针指向的地址不能更改，内部数据可以改
+
+## 之前用var声明变量引起的问题
+
+1. 允许重复的变量声明：导致数据被覆盖
+
+```js
+var a = 1;
+
+function print() {
+  console.log(a);
+}
+
+// 假设这里有一千行代码
+
+var a = 2;
+
+print();
+```
+
+2. 变量提升
+
++ 怪异的数据访问
+
+```js
+if (Math.random() < 0.5) {
+    var a = "abc";
+    console.log(a);
+} else {
+    console.log(a);
+}
+console.log(a);
+```
+
++ 闭包问题
+
+```js
+var div = document.getElementById("divButtons")
+
+for (var i = 1; i <= 10; i++) {
+    var btn = document.createElement("button");
+    btn.innerHTML = "按钮" + i;
+    div.appendChild(btn);
+    btn.onclick = function () {
+        console.log(i); //输出11
+    }
+}
+
+// 循环结束后，i：11
+```
+
+3. 全局变量挂载到全局对象：全局对象成员污染问题
+
+```js
+var abc = "123";
+console.log(window.abc);
+
+var console = "abc"; // 直接就把 window 的 console 覆盖了
+
+console.log(console) // 直接报错，console.log 不能用了
+
+```
 
 # let命令
 ## 基本用法
