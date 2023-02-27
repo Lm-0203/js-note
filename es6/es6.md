@@ -492,6 +492,66 @@ console.log(p3);
     <script>
     ```
 
+# 对象
+
+## 新增的对象字面量语法
+
+1. 成员速写
+   
+   如果对象字面量初始化时，成员的名称来自于一个变量，并且和变量的名称相同，则可以进行简写
+
+    ```js
+    function createUser(loginId, loginPwd, nickName) {
+        const sayHello = function () {
+            console.log("loginId", this.loginId, "nickname", this.nickName)
+        }
+        return {
+            loginId,
+            loginPwd,
+            nickName,
+            sayHello,
+            id: Math.random()
+        }
+    }
+    const u = createUser("abc", "123", "aaa");
+    u.sayHello();
+    ```
+
+2. 方法速写
+   对象字面初始化时，方法可以省略冒号和function关键字
+   ```js
+    const user = {
+        name: "姬成",
+        age: 100,
+        sayHello(){
+            console.log(this.name, this.age)
+        }
+    }
+    user.sayHello();
+   ```
+
+3. 计算属性名
+   
+   有的时候，初始化对象时，某些属性名可能来自于某个表达式的值，在ES6，可以使用中括号来表示该属性名是通过计算得到的。
+
+    ```js
+    const prop1 = "name2";
+    const prop2 = "age2";
+    const prop3 = "sayHello2";
+
+    const user = {
+        [prop1]: "姬成",
+        [prop2]: 100,
+        [prop3](){
+            console.log(this[prop1], this[prop2])
+        }
+    }
+
+    user[prop3]();
+
+    console.log(user)
+    ```
+
 # 解构
 
 ES6允许按照一定的模式，从数组和对象中，对变量进行赋值，这被称为解构（Destructuring）
