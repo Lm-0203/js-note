@@ -394,13 +394,14 @@ new.target
 function Person(firstName, lastName) {
     //判断是否是使用new的方式来调用的函数
 
-    // //过去的判断方式
+    // //过去的判断方式 只能通过this指向来判断
     // if (!(this instanceof Person)) {
     //     throw new Error("该函数没有使用new来调用")
     // }
 
     console.log(new.target);
 
+    // 直接语法上判断有没有使用new
     if (new.target === undefined) {
         throw new Error("该函数没有使用new来调用")
     }
@@ -420,6 +421,76 @@ console.log(p2);
 const p3 = Person.call(p1, "袁", "进") // undefined
 console.log(p3);
 ```
+
+## 箭头函数
+
+### 回顾：this指向
+
+1. 通过对象调用函数，this指向对象
+2. 直接调用函数，this指向全局对象
+3. 如果通过new调用函数，this指向新创建的对象
+4. 如果通过apply、call、bind调用函数，this指向指定的数据
+5. 如果是DOM事件函数，this指向事件源
+
+### 应用场景
+
+1. 临时性使用的函数，并不会可以调用它，比如：
+   1. 事件处理函数
+   2. 异步处理函数
+   3. 其他临时性的函数
+2. 为了绑定外层this的函数
+3. 在不影响其他代码的情况下，保持代码的简洁，最常见的，数组方法中的回调函数
+
+### 普通函数和箭头函数的区别
+
++ 最明显的区别，箭头函数可以没有function关键字定义，可以省略function
++ 箭头函数中，不存在this、arguments、new.target，如果使用了，则使用的是函数外层的对应的this、arguments、new.target
++ 箭头函数没有原型
++ 不可以当做构造函数，也就是说，不可以使用 new 命令，否则会抛出一个错误
++ 不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest[rest] 参数代替
++ 不可以使用 yield 命令，因此箭头函数不能用作 Generator 函数
++ 因为箭头函数没有自己的this，所以当然不能用call bind apply这些方法改变this指向
++ 箭头函数是函数表达式，理论上，任何使用函数表达式的场景，都可以使用箭头函数。普通函数有函数声明，也有函数表达式
++ 箭头函数体内的 this 对象，就是函数定义时所在的对象，而不是使用时所在的对象
+  + 在普通函数中，this的指向是可变的，但是在箭头函数中，它是固定的
+  + 箭头函数绑定了父级作用域的上下文。箭头函数中的this指向函数定义时所在的对象，箭头函数的this指向固定化，不是因为箭头函数内部有绑定this的机制，是因为箭头函数根本没有自己的this。导致内部的this就是外层代码块的this。正是因为它没有this，所以就不能被当做构造函数
+
+    script 标签相当于一个代码块，this指向window，所以打印出来的是window对象
+
+    ```html
+    <script>
+        const fun = () => {
+            console.log(this); // window对象
+        }
+        fun()
+    </script>
+    ```
+
+    ```html
+    <script>
+        const fun = () => {
+            console.log(this); // window对象
+        }
+        fun.call({id: 123}) // 箭头函数就没有this，也没有改变this指向一说
+    </script>
+    ```
+
+    ```html
+    <script>
+        function fun() {
+            return function (){
+                return () => {
+                    console.log(this);
+                }
+            }
+        }
+    
+        let fn = fun.call({id:3});
+    
+        fn.call({id:3})(); // 打印出来{id: 3}
+        fn()(); // 打印出来window对象
+    <script>
+    ```
 
 # 解构
 
@@ -1653,68 +1724,6 @@ co(g).then(res => {
 #### co函数自动执行generator函数的原理
 
 + 因为Generator函数自身就是一个异步操作的容器，
-
-
-
-
-
-# 普通函数和箭头函数的区别
-
-+ 最明显的区别，箭头函数可以没有function关键字定义，可以省略function
-
-+ 箭头函数体内的 this 对象，就是定义时所在的对象，而不是使用时所在的对象
-
-  + 在普通函数中，this的指向是可变的，但是在箭头函数中，它是固定的
-
-  + 箭头函数绑定了父级作用域的上下文。箭头函数中的this指向函数定义时所在的对象，箭头函数的this指向固定化，不是因为箭头函数内部有绑定this的机制，是因为箭头函数根本没有自己的this。导致内部的this就是外层代码块的this。正是因为它没有this，所以就不能被当做构造函数
-
-    script 标签相当于一个代码块，this指向window，所以打印出来的是window对象
-
-    ```html
-    <script>
-        const fun = () => {
-            console.log(this); // window对象
-        }
-        fun()
-    </script>
-    ```
-
-    ```html
-    <script>
-        const fun = () => {
-            console.log(this); // window对象
-        }
-        fun.call({id: 123}) // 箭头函数就没有this，也没有改变this指向一说
-    </script>
-    ```
-
-    ```html
-    <script>
-        function fun() {
-            return function (){
-                return () => {
-                    console.log(this);
-                }
-            }
-        }
-    
-        let fn = fun.call({id:3});
-    
-        fn.call({id:3})(); // 打印出来{id: 3}
-        fn()(); // 打印出来window对象
-    <script>
-    ```
-
-    
-
-+ 不可以当做构造函数，也就是说，不可以使用new 命令，否则会抛出一个错误
-
-+ 不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest[rest] 参数代替
-
-+ 不可以使用 yield 命令，因此箭头函数不能用作 Generator 函数
-
-+ 因为箭头函数没有自己的this，所以当然不能用call bind apply这些方法改变this指向
-
 
 
 # import 和 export
