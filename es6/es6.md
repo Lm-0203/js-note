@@ -380,7 +380,46 @@ sum(); // []
     sum(); // []
     ```
 
+## 明确函数的双重用途
 
+ES6提供了一个特殊的API，可以使用该API在函数内部，判断该函数是否使用了new来调用
+
+```js
+new.target 
+//该表达式的值，得到的是：如果没有使用new来调用函数，则返回undefined
+//如果使用new调用函数，则得到的是new关键字后面的函数本身
+```
+
+```js
+function Person(firstName, lastName) {
+    //判断是否是使用new的方式来调用的函数
+
+    // //过去的判断方式
+    // if (!(this instanceof Person)) {
+    //     throw new Error("该函数没有使用new来调用")
+    // }
+
+    console.log(new.target);
+
+    if (new.target === undefined) {
+        throw new Error("该函数没有使用new来调用")
+    }
+
+    // 如果不用 new 的话，this 指向widow
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.fullName = `${firstName} ${lastName}`;
+}
+
+const p1 = new Person("袁", "进"); // Person
+console.log(p1)
+
+const p2 = Person("袁", "进"); // undefined
+console.log(p2);
+
+const p3 = Person.call(p1, "袁", "进") // undefined
+console.log(p3);
+```
 
 # 解构
 
