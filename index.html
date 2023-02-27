@@ -8,12 +8,13 @@
   </head>
   <body>
     <script>
-      function test(a, b = a) {
-        console.log(a, b);
+      function sum(a, b, ...rest) {
+        console.log(rest); // [3, 4];
       }
 
-      test(undefined, 2);
-      test(2)
+      sum(1, 2, 3, 4); // // [1, 2, 3, 4];
+      sum(1, 2); // []
+      sum(); // []
     </script>
   </body>
 </html>
