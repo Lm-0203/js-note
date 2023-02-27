@@ -380,6 +380,8 @@ sum(); // []
     sum(); // []
     ```
 
+
+
 # 解构
 
 ES6允许按照一定的模式，从数组和对象中，对变量进行赋值，这被称为解构（Destructuring）
@@ -472,6 +474,14 @@ let [x, y, z] = new Set(['a', 'b', 'c']); //返回一个对象
 ## 对象的解构赋值
 变量必须与属性同名，才能取到正确的值
 
+```js
+const obj = {
+    name: "cheng",
+    age: 18,
+};
+console.log(...obj); // Spread syntax requires ...iterable[Symbol.iterator] to be a function
+```
+
 ## 应用
 1. 变量交换
 2. 从函数返回多个值
@@ -518,6 +528,36 @@ let [x, y, z] = new Set(['a', 'b', 'c']); //返回一个对象
 let arr = [1, 3, 4];
 console.log(...arr);
 // 1, 3, 4
+```
+
+```js
+function cal(a, b, c, d) {
+    return a + b * c - d;
+}
+//curry：柯里化，用户固定某个函数的前面的参数，得到一个新的函数，新的函数调用时，接收剩余的参数
+function curry(func, ...args) {
+    return function(...subArgs) {
+        const allArgs = [...args, ...subArgs];
+        if (allArgs.length >= func.length) {
+            //参数够了
+            return func(...allArgs);
+        } else {
+            //参数不够，继续固定
+            return curry(func, ...allArgs);
+        }
+    }
+}
+
+const newCal = curry(cal, 1, 2)
+
+console.log(newCal(3, 4)) // 1+2*3-4
+console.log(newCal(4, 5)) // 1+2*4-5
+console.log(newCal(5, 6)) // 1+2*5-6
+console.log(newCal(6, 7)) // 1+2*6-7
+
+const newCal2 = newCal(8)
+
+console.log(newCal2(9)); // 1+2*8-9
 ```
 
 ###### 复制数组

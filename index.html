@@ -8,13 +8,11 @@
   </head>
   <body>
     <script>
-      function sum(a, b, ...rest) {
-        console.log(rest); // [3, 4];
-      }
-
-      sum(1, 2, 3, 4); // // [1, 2, 3, 4];
-      sum(1, 2); // []
-      sum(); // []
+      const obj = {
+        name: "cheng",
+        age: 18,
+      };
+      console.log(...obj);
     </script>
   </body>
 </html>
