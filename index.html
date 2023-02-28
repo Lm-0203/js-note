@@ -9,12 +9,15 @@
   <body>
     <script>
       const obj = {
-        print: () => {
-          console.log(this); // window
-        }
+        d: 1,
+        b: 2,
+        a: 3,
+        0: 6,
+        5: 2,
+        4: 1,
       };
-      const print1 = obj.print;
-      print1();
+      const props = Object.getOwnPropertyNames(obj);
+      console.log(obj.__proto__);
     </script>
   </body>
 </html>
