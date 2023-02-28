@@ -761,6 +761,62 @@ obj1.abc();
     console.log(obj1, obj1.__proto__);
     ```
 
+## 面向对象简介
+
+面向对象：一种编程思想，跟具体的语言无关
+
+【大象装冰箱】
+- 面向过程：思考的切入点是功能的步骤
+    ```js
+    //1. 冰箱门打开
+    function openFrige(){}
+    openFrige();
+
+    //2. 大象装进去
+    function elephantIn(){}
+
+    elephantIn();
+
+    //3. 冰箱门关上
+    function closeFrige(){}
+
+    closeFrige();
+    ```
+
+- 面向对象：思考的切入点是对象的划分
+  
+  在代码层面可能不是很简洁，但是功能上，更加容易组合和拆分，利于书写大型项目
+  
+  思考的切入点，不是第一步做什么，第二步做什么，而是程序里面有哪些对象(哪些名词)
+    ```js
+    // 比如有一头大象，声明一个大象的构造函数
+    function Elephant() {}
+    var ele = new Elephant();
+
+    // 有一个冰箱，声明一个冰箱的构造函数
+    function Frige() {}
+    var frig = new Frige();
+    // 在构造函数的原型上声明一些方法
+    Frige.prototype.openDoor = function () {}
+    Frige.prototype.closeDoor = function () {}
+    Frige.prototype.join = function(something){}
+    Frige.prototype.wholeJoin = function(something) {
+        this.openDoor();
+        this.useSomething(something);
+        this.closeDoor();
+    }
+
+    // 1. 冰箱门打开
+    frig.openDoor();
+    // 2. 大象装进去
+    frig.join(ele);
+    // 3. 冰箱门关上
+    frig.closeDoor();
+
+    // 融合一下
+    frig.wholeJoin(ele);
+    ```
+
 # 解构
 
 ES6允许按照一定的模式，从数组和对象中，对变量进行赋值，这被称为解构（Destructuring）
