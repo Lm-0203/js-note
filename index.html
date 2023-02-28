@@ -9,10 +9,12 @@
   <body>
     <script>
       const obj = {
-        name: "cheng",
-        age: 18,
+        print: () => {
+          console.log(this); // window
+        }
       };
-      console.log(...obj);
+      const print1 = obj.print;
+      print1();
     </script>
   </body>
 </html>

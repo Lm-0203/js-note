@@ -424,13 +424,129 @@ console.log(p3);
 
 ## 箭头函数
 
-### 回顾：this指向
+### 回顾：普通函数this指向
 
-1. 通过对象调用函数，this指向对象
-2. 直接调用函数，this指向全局对象
+1. 通过对象调用函数，this指向对象 -> 谁调用的这个函数，函数里面的this就指向谁
+2. 直接调用函数，this指向全局对象 -> 相当于是全局调用
 3. 如果通过new调用函数，this指向新创建的对象
 4. 如果通过apply、call、bind调用函数，this指向指定的数据
 5. 如果是DOM事件函数，this指向事件源
+
+关于this指向
+
+```js
+const obj = {
+    count: 0,
+    start: function () {
+        console.log(this); // obj
+        setTimeout(function () {
+            console.log(this); // window setTimeout 里面的回调函数相当于 js 引擎内部调用
+        }, 1000);
+    },
+};
+obj.start();
+```
+
+```js
+const obj = {
+    count: 0,
+    start: function () {
+        console.log(this); // window
+        setTimeout(function () {
+            console.log(this); // window
+        }, 1000);
+    },
+    print: () => {
+        console.log(this); // window
+    }
+};
+
+const start1 = obj.start;
+const print1 = obj.print;
+
+start1();
+print1();
+
+```
+
+```js
+const obj = {
+    count: 0,
+    start: function () {
+        console.log(this); // obj
+        setTimeout(() => {
+            console.log(this); // obj
+        }, 1000);
+    },
+};
+
+obj.start();
+```
+
+```js
+const obj = {
+    count: 0,
+    start: () => {
+        console.log(this); // window
+        setTimeout(() => {
+            console.log(this); // window
+        }, 1000);
+    },
+};
+
+obj.start();
+```
+
+```js
+const obj = {
+    count: 0,
+    regEvent: function () {
+        console.log(this); // obj
+        window.onclick = () => {
+            console.log(this); // obj
+        };
+    },
+};
+
+obj.start();
+```
+
+```js
+const obj = {
+    count: 0,
+    regEvent: () => {
+        console.log(this); // window
+        window.onclick = () => {
+            console.log(this); // window
+        };
+    },
+};
+
+obj.regEvent();
+```
+
+```js
+function abc() {
+    console.log(this); // obj1
+    const obj = {
+        count: 0,
+        regEvent: () => {
+            console.log(this); // obj1
+            window.onclick = () => {
+                console.log(this); // obj1
+            };
+        },
+    };
+
+    obj.regEvent();
+}
+
+const obj1 = {
+    abc,
+};
+
+obj1.abc();
+```
 
 ### 应用场景
 
@@ -445,6 +561,18 @@ console.log(p3);
 
 + 最明显的区别，箭头函数可以没有function关键字定义，可以省略function
 + 箭头函数中，不存在this、arguments、new.target，如果使用了，则使用的是函数外层的对应的this、arguments、new.target
+    ```js
+    const obj = {
+        method: function () {
+            const func = () => {
+                console.log(this); // obj
+                console.log(arguments); // [234]
+            };
+            func();
+        },
+    };
+    obj.method(234);
+    ```
 + 箭头函数没有原型
 + 不可以当做构造函数，也就是说，不可以使用 new 命令，否则会抛出一个错误
 + 不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest[rest] 参数代替
