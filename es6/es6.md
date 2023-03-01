@@ -1070,6 +1070,151 @@ obj1.abc();
     }
     ```
 
+### 类的继承
+
+过去的继承
+
+    ```js
+    function Animal(type, name, age, sex) {
+        this.type = type;
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+    }
+    Animal.prototype.print = function () {
+        console.log(`【种类】：${this.type}`);
+        console.log(`【名字】：${this.name}`);
+        console.log(`【年龄】：${this.age}`);
+        console.log(`【性别】：${this.sex}`);
+    }
+
+    function Dog(name, age, sex) {
+        //借用父类的构造函数
+        Animal.call(this, "犬类", name, age, sex);
+    }
+
+    Object.setPrototypeOf(Dog.prototype, Animal.prototype);
+
+    const d = new Dog("旺财", 3, "公");
+    d.print();
+    console.log(d);
+    ```
+
+如果两个类A和B，如果可以描述为：B 是 A，则，A和B形成继承关系
+
+如果B是A，则：
+
+1. B继承自A
+2. A派生B
+3. B是A的子类
+4. A是B的父类
+
+如果A是B的父类，则B会自动拥有A中的所有实例成员。
+
+关键字：
+
+- extends：继承，用于类的定义
+- super
+  - 直接当作函数调用，表示父类构造函数
+  - 如果当作对象使用，则表示父类的原型
+
+
+> 注意：
+> + ES6要求，如果子类写了constructor，则必须在constructor的第一行通过super手动调用父类的构造函数，如果不调用会报错（Uncaught ReferenceError: Must call super constructor in derived class before accessing 'this' or returning from derived constructor at new Dog）。
+> + 如果子类不写constructor，则会有默认的构造器，该构造器需要的参数和父类一致，并且自动调用父类构造器
+> 
+>   ```js 
+>   class Animal {
+>       constructor(type, name, age, sex) {}
+>   }
+>   class Dog extends Animal {
+>       // 如果不写constructor，会自动调用，需要的参数格式和父类一致
+>       // constructor(type, name, age, sex) {
+>       //     super(type, name, age, sex)
+>       // }
+>   }
+>   ```
+
+```js
+class Animal {
+    constructor(type, name, age, sex) {
+        this.type = type;
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+    }
+
+    print() {
+        console.log(`【种类】：${this.type}`);
+        console.log(`【名字】：${this.name}`);
+        console.log(`【年龄】：${this.age}`);
+        console.log(`【性别】：${this.sex}`);
+    }
+
+    jiao(){
+        throw new Error("动物怎么叫的？");
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, age, sex) {
+        // super 直接当作函数调用
+        super("犬类", name, age, sex);
+        // 子类特有的属性
+        this.loves = "吃骨头";
+    }
+
+    print(){
+        //super当作对象用 调用父类原型上的print
+        super.print();
+        //自己特有的代码
+        console.log(`【爱好】：${this.loves}`);
+    }
+
+
+    //同名方法，会覆盖父类
+    jiao(){
+        console.log("旺旺！");
+    }
+}
+
+const d = new Dog("旺财", 3, "公");
+d.print();
+console.log(d)
+d.jiao();
+```
+
+
+【冷知识】
+
+- 用JS制作抽象类
+  - 抽象类：一般是父类，不能通过该类创建对象
+- 正常情况下，this的指向，this始终指向具体的类的对象
+
+```js
+class Animal {
+    constructor(type, name, age, sex) {
+        console.log(new.target)
+        console.log(this);
+        if (new.target === Animal) {
+            throw new TypeError("你不能直接创建Animal的对象，应该通过子类创建")
+        }
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, age, sex) {
+        super("犬类", name, age, sex);
+        // 子类特有的属性
+        this.loves = "吃骨头";
+    }
+}
+
+//下面的代码逻辑有误
+const a = new Animal("狗", "旺财", 3, "公"); // Animal 的 constructor 中，new.target 是 Animal 这个类的函数体。 Animal中的this 指向 a
+const dog1 = new Dog("旺财", 3, "公"); // new Dog 的时候在 Animal 的 constructor 中，new.target 是 Dog 这个类的函数体。 Animal 中的 this 指向 dog1
+```
+
 # 解构
 
 ES6允许按照一定的模式，从数组和对象中，对变量进行赋值，这被称为解构（Destructuring）

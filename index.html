@@ -8,24 +8,23 @@
   </head>
   <body>
     <script>
-      class Test {
-        // @Obsolete
-        print() {
-          console.log("print方法");
+      class Animal {
+        constructor(type, name, age, sex) {
+          console.log(this);
         }
       }
 
-      function Obsolete(target, methodName, descriptor) {
-        // function Test
-        // print
-        // { value: function print(){}, ... }
-        // console.log(target, methodName, descriptor);
-        const oldFunc = descriptor.value;
-        descriptor.value = function (...args) {
-          console.warn(`${methodName}方法已过时`);
-          oldFunc.apply(this, args);
-        };
+      class Dog extends Animal {
+        constructor(name, age, sex) {
+          super("犬类", name, age, sex);
+          // 子类特有的属性
+          this.loves = "吃骨头";
+        }
       }
+
+      //下面的代码逻辑有误
+      const a = new Dog("旺财", 3, "公");
+      const b = new Animal()
     </script>
   </body>
 </html>
