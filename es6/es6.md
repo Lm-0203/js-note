@@ -866,8 +866,209 @@ obj1.abc();
 5. 类的构造器必须使用 new 来调用
 6. 不会被绑定在window上
 
+### 类的其他书写方式
+
++ 可计算的成员名
+
+    ```js
+    const printName = "print";
+
+    class Animal {
+        constructor(type, name, age, sex) {
+            this.type = type;
+            this.name = name;
+            this.age = age;
+            this.sex = sex;
+        }
+
+        [printName]() {
+            console.log(`【种类】：${this.type}`);
+            console.log(`【名字】：${this.name}`);
+            console.log(`【年龄】：${this.age}`);
+            console.log(`【性别】：${this.sex}`);
+        }
+    }
+
+    const a = new Animal("狗", "旺财", 3, "男");
+    a[printName]();
+    ```
+
++ getter和setter
+
+    Object.defineProperty 可定义某个对象成员属性的读取和设置
+    使用getter和setter控制的属性，不在原型上, 在实例上，是实例的一个不可枚举属性
+
+    ```js
+    const printName = "print";
+
+    class Animal {
+        constructor(type, name, age, sex) {
+            this.type = type;
+            this.name = name;
+            // 相当于是 set age(age) 执行
+            this.age = age;
+            this.sex = sex;
+        }
+
+        // 创建一个age属性，并给它加上getter，读取该属性时，会运行该函数
+        // 通过这种方法创建的属性是不可以枚举属性，_age 是可枚举的
+        // 如果只有get，没有set的话会报错 Uncaught TypeError: Cannot set property age of #<Animal> which has only a getter
+        get age() {
+            return this._age + "岁";
+        }
+
+        // 创建一个age属性，并给它加上setter，给该属性赋值时，会运行该函数
+        // 通过这种方法创建的属性是不可以枚举属性，_age 是可枚举的
+        // 只能有一个参数
+        set age(age) {
+            if (typeof age !== "number") {
+                throw new TypeError("age property must be a number");
+            }
+            if (age < 0) {
+                age = 0;
+            }
+            else if (age > 1000) {
+                age = 1000;
+            }
+            this._age = age;
+        }
+
+        [printName]() {
+            console.log(`【种类】：${this.type}`);
+            console.log(`【名字】：${this.name}`);
+            console.log(`【年龄】：${this.age}`);
+            console.log(`【性别】：${this.sex}`);
+        }
+    }
+
+    var a = new Animal("狗", "旺财", 3, "男");
+    ```
+
++ 静态成员
+
+    静态成员是构造函数本身的成员，也就是构造函数的属性，因为函数也是一个对象，只能通过构造函数本身访问，不能通过实例访问
+
+    类（class）通过 static 关键字定义静态方法。不能在类的实例上调用静态方法，而应该通过类本身调用。这些通常是实用程序方法，例如创建或克隆对象的功能。
+
+    ```js
+    class Chess {
+        constructor(name) {
+            this.name = name;
+        }
+
+        static width = 50;
+
+        static height = 50;
+
+        // 静态属性调用同一个类中的其他静态属性，可使用 this 关键字。
+        static method() {
+            console.log(this.width);
+        }
+    }
+
+    console.log(Chess.width)
+    console.log(Chess.height)
+
+    Chess.method();
+
+    ```
+
++ 字段初始化器（ES7）
+
+    > 注意：
+    > + 使用static的字段初始化器，添加的是静态成员
+    > + 没有使用static的字段初始化器，添加的属性位于实例对象上
+    > + 箭头函数在字段初始化器位置上，添加的属性位于实例对象上
+
+    ```js
+    class Test {
+        // static key = value
+        static a = 1;
+
+        // 直接使用 key = value 的方式 就是 字段初始化器
+        b = 2;
+        c = 3;
+
+        constructor() {
+            // this.d = 2 + 3
+            // d 就是 5
+            this.d = this.b + this.c;
+        }
+    }
+
+    const t = new Test();
+    console.log(t)
+
+    ```
+
+    ```js
+    class Test {
+        constructor() {
+            // 相当于 this.print = () => {}, 所以 print 方法会绑定在实例对象上 会占用额外的内存空间
+            this.a = 123;
+        }
+
+        print = () => {
+            console.log(this.a);
+        };
+        print2() {
+            console.log(this.a);
+        }
+    }
+
+    const t1 = new Test();
+    const p1 = t1.print;
+    const p2 = t1.print2;
+    t1.print(); // 123
+    t1.print2(); // 123
+    p1(); // 123
+    p2(); // 报错 Cannot read properties of undefined (reading 'a') this 指向undefiend 但是我不知道为什么this会是undefined
+    const t2 = new Test();
+    console.log(t1.print === t2.print); // false
+    console.log(t1.print2 === t2.print2) // ture
+    ```
 
 
++ 类表达式
+
+    ```js
+    const A = class { //匿名类，类表达式
+        a = 1;
+        b = 2;
+    }
+
+    const a = new A();
+    console.log(a)
+    ```
+
++ [扩展]装饰器（ES7）(Decorator)
+
+    对装饰器的实验性支持是一个可能在未来版本中改变的功能。
+    装饰器的本质是一个函数，有三个参数
+
+    ```js
+    class Test {
+
+        // 装饰器名称是自己定义
+        // 语法 @装饰器名称
+        @Obsolete
+        print() {
+            console.log("print方法")
+        }
+    }
+
+    function Obsolete(target, methodName, descriptor) {
+        // function Test
+        // print
+        // { value: function print(){}, ... }
+        console.log(target, methodName, descriptor);
+        const oldFunc = descriptor.value
+        descriptor.value = function (...args) {
+            console.warn(`${methodName}方法已过时`);
+            oldFunc.apply(this, args);
+        }
+    }
+    ```
 
 # 解构
 
