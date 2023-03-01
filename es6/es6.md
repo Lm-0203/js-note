@@ -817,6 +817,58 @@ obj1.abc();
     frig.wholeJoin(ele);
     ```
 
+## 类：构造函数的语法糖
+
+### 传统的构造函数的问题
+
+1. 属性和原型方法定义分离，降低了可读性
+2. 原型成员可以被枚举
+3. 默认情况下，构造函数仍然可以被当作普通函数使用
+   
+    ```js
+    //面向对象中，将 下面对一个对象的所有成员的定义，统称为类
+
+    //构造函数  构造器
+    function Animal(type, name, age, sex) {
+        this.type = type;
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+    }
+
+    //定义实例方法（原型方法）
+    Animal.prototype.print = function () {
+        console.log(`【种类】：${this.type}`);
+        console.log(`【名字】：${this.name}`);
+        console.log(`【年龄】：${this.age}`);
+        console.log(`【性别】：${this.sex}`);
+    }
+
+    const a = new Animal("狗", "旺财", 3, "男");
+    a.print();
+
+    // 原型成员可以被枚举
+    // 使用for-in循环，返回的是所有能够通过对象访问的、可枚举的属性，其中既包括存在于实例中的属性，又包括存在于原型中的属性。屏蔽了原型中不可枚举属性的实例属性也会在for-in循环中返回。
+    // for-in循环会遍历原型链上可枚举的所有属性。屏蔽了原型中不可枚举属性的实例属性也会在for-in循环中返回。
+    // 如果想要只遍历实例对象的属性，不遍历原型链中的属性，可以使用hasOwnProperty 方法过滤一下。
+    // 属性的可枚举性和所有权 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
+    for (const prop in a) {
+        console.log(prop) // type name age sex print
+    }
+    ```
+
+### 类的特点
+
+1. 类声明不会被提升，与 let 和 const 一样，存在暂时性死区
+2. 类中的所有代码均在严格模式下执行（自动加的严格模式）
+3. 类的所有方法都是不可枚举的
+4. 类的所有方法都无法被当作构造函数使用
+5. 类的构造器必须使用 new 来调用
+6. 不会被绑定在window上
+
+
+
+
 # 解构
 
 ES6允许按照一定的模式，从数组和对象中，对变量进行赋值，这被称为解构（Destructuring）
