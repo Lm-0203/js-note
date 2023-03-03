@@ -46,7 +46,7 @@ ES6 声明变量的六种方法: ES6 除了添加let和const命令，后面章�
     ```js
     var a = 1;
     function print() {
-    console.log(a);
+        console.log(a);
     }
     // 假设这里有一千行代码
     var a = 2;
@@ -647,7 +647,7 @@ obj1.abc();
 
 2. 方法速写
    对象字面初始化时，方法可以省略冒号和function关键字
-   ```js
+    ```js
     const user = {
         name: "姬成",
         age: 100,
@@ -656,7 +656,7 @@ obj1.abc();
         }
     }
     user.sayHello();
-   ```
+    ```
 
 3. 计算属性名
    
@@ -1074,31 +1074,31 @@ obj1.abc();
 
 过去的继承
 
-    ```js
-    function Animal(type, name, age, sex) {
-        this.type = type;
-        this.name = name;
-        this.age = age;
-        this.sex = sex;
-    }
-    Animal.prototype.print = function () {
-        console.log(`【种类】：${this.type}`);
-        console.log(`【名字】：${this.name}`);
-        console.log(`【年龄】：${this.age}`);
-        console.log(`【性别】：${this.sex}`);
-    }
+```js
+function Animal(type, name, age, sex) {
+    this.type = type;
+    this.name = name;
+    this.age = age;
+    this.sex = sex;
+}
+Animal.prototype.print = function () {
+    console.log(`【种类】：${this.type}`);
+    console.log(`【名字】：${this.name}`);
+    console.log(`【年龄】：${this.age}`);
+    console.log(`【性别】：${this.sex}`);
+}
 
-    function Dog(name, age, sex) {
-        //借用父类的构造函数
-        Animal.call(this, "犬类", name, age, sex);
-    }
+function Dog(name, age, sex) {
+    //借用父类的构造函数
+    Animal.call(this, "犬类", name, age, sex);
+}
 
-    Object.setPrototypeOf(Dog.prototype, Animal.prototype);
+Object.setPrototypeOf(Dog.prototype, Animal.prototype);
 
-    const d = new Dog("旺财", 3, "公");
-    d.print();
-    console.log(d);
-    ```
+const d = new Dog("旺财", 3, "公");
+d.print();
+console.log(d);
+```
 
 如果两个类A和B，如果可以描述为：B 是 A，则，A和B形成继承关系
 
