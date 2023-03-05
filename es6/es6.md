@@ -1537,6 +1537,159 @@ console.log(syb2, typeof syb2); // Symbol(abc) 'symbol'
 - 符号无法被隐式转换，因此不能被用于数学运算、字符串拼接或其他隐式转换的场景，但符号可以显式的转换为字符串，通过 String 构造函数进行转换即可，console.log 之所以可以输出符号，是它在内部进行了显式转换
   - 隐式转换就是 ```+ '1'```, '1' 被隐式转换成数字1
 
+## 共享符号
+
+根据某个符号名称（符号描述）能够得到同一个符号
+
+```js
+//获取共享符号
+Symbol.for("符号名/符号描述")  
+
+const syb1 = Symbol.for('123');
+const syb2 = Symbol.for('123');
+console.log(syb1 === syb2);
+```
+
+## 知名（公共、具名）符号
+
+知名符号是一些具有特殊含义的共享符号，通过 Symbol 的静态属性得到
+
+ES6 延续了 ES5 的思想：减少魔法，暴露内部实现！
+
+因此，ES6 用知名符号暴露了某些场景的内部实现
+
+1. Symbol.hasInstance
+
+该符号用于定义构造函数的静态成员，它将影响 instanceof 的判定
+
+```js
+
+obj instanceof A
+
+//等效于
+
+A[Symbol.hasInstance](obj) // Function.prototype[Symbol.hasInstance]
+
+```
+
+```js
+function A() {}
+
+Object.defineProperty(A, Symbol.hasInstance, {
+    value: function () {
+        return false;
+    },
+});
+
+const obj = new A();
+console.log(obj instanceof A); // false
+console.log(A[Symbol.hasInstance](obj)); // false
+```
+
+2. [扩展] Symbol.isConcatSpreadable
+
+该知名符号会影响数组的 concat 方法
+
+```js
+const arr = [3];
+
+const arr2 = arr.concat(56, [3, 4, 5]);
+
+console.log(arr2); // [3, 56, 3, 4, 5]
+```
+
+```js
+const arr = [3];
+
+const arr2 = [4, 5, 6];
+
+arr2[Symbol.isConcatSpreadable] = false;
+
+console.log(arr.concat(arr2)); // [3, [4, 5, 6]]
+```
+
+```js
+const arr = [3];
+
+const obj = {
+    0: 4,
+    1: 5,
+    length: 2,
+    [Symbol.isConcatSpreadable]: true,
+}
+
+console.log(arr.concat(obj));
+```
+
+3. [扩展] Symbol.toPrimitive
+
+该知名符号会影响类型转换的结果
+
+```js
+const obj = {
+    a: 1,
+    b: 2,
+}
+
+console.log(obj + 123); // [object Object]123
+
+const obj2 = {
+    a: 1,
+    b: 2,
+    [Symbol.toPrimitive]: function () {
+        return 2;
+    },
+};
+
+console.log(obj2 + 123); // 125
+```
+
+```js
+class Temperature {
+    constructor(degree) {
+        this.degree = degree;
+    }
+
+    [Symbol.toPrimitive](type) {
+        if (type === "default") {
+            return this.degree + "摄氏度";
+        } else if (type === "number") {
+            return this.degree;
+        } else if (type === "string") {
+            return this.degree + "℃";
+        }
+    }
+}
+
+const t = new Temperature(30);
+
+console.log(t + "!"); // 30摄氏度
+console.log(t / 2); // 15
+console.log(String(t)); // 30℃
+```
+
+4. [扩展] Symbol.toStringTag
+
+该知名符号会影响 Object.prototype.toString 的返回值
+
+```js
+class Person {
+
+    [Symbol.toStringTag] = "Person"
+}
+
+const p = new Person();
+
+const arr = [32424, 45654, 32]
+
+console.log(Object.prototype.toString.apply(p));
+console.log(Object.prototype.toString.apply(arr))
+```
+
+5. 其他知名符号
+
+
+
 
 
 # promise

@@ -8,15 +8,16 @@
   </head>
   <body>
     <script>
-      const syb1 = Symbol();
+      class Person {
+        [Symbol.toStringTag] = "Person";
+      }
 
-      const obj = {
-        a: 1,
-        b: 2,
-        [syb1]: 3,
-      };
+      const p = new Person();
 
-      console.log(obj);
+      const arr = [32424, 45654, 32];
+
+      console.log(Object.prototype.toString.apply(p));
+      console.log(Object.prototype.toString.apply(arr));
     </script>
   </body>
 </html>
