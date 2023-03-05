@@ -1347,9 +1347,52 @@ let { name: objName, age, sex: gender = 123, address: { province } } = user;
 console.log(objName, age, gender, address, );
 ```
 
-# 数组的扩展
-##### 扩展运算符
 ```js
+// 函数参数的结构
+
+function print({ name, age, sex, address: {
+    province,
+    city
+} }) {
+    console.log(`姓名：${name}`)
+    console.log(`年龄：${age}`)
+    console.log(`性别：${sex}`)
+    console.log(`身份：${province}`)
+    console.log(`城市：${city}`)
+}
+
+const user = {
+    name: "kevin",
+    age: 11,
+    sex: "男",
+    address: {
+        province: "四川",
+        city: "成都"
+    }
+}
+print(user)
+
+// 默认值
+
+function ajax({
+    method = "get",
+    url = "/"
+} = {}) {
+    console.log(method, url)
+}
+
+ajax()
+
+function move({x, y} = {x: 0, y: 0}) {
+    return [x, y];
+}
+```
+
+# 数组的扩展
+
+```js
+// 扩展运算符
+
 let arr = [1, 3, 4];
 console.log(...arr);
 // 1, 3, 4
@@ -1360,6 +1403,7 @@ function cal(a, b, c, d) {
     return a + b * c - d;
 }
 //curry：柯里化，用户固定某个函数的前面的参数，得到一个新的函数，新的函数调用时，接收剩余的参数
+
 function curry(func, ...args) {
     return function(...subArgs) {
         const allArgs = [...args, ...subArgs];
@@ -1385,30 +1429,34 @@ const newCal2 = newCal(8)
 console.log(newCal2(9)); // 1+2*8-9
 ```
 
-###### 复制数组
 ```js
+// 复制数组
+
 var arr1 = [1, 4, 8];
 var arr2 = [...arr1];
 console.log(arr2);
 ```
 
-##### 合并数组
 ```js
+// 合并数组
+
 let arr1 = [1, 2, 3];
 let arr2 = ['a', 'b', 'c'];
 let newArr = [...arr1, ...arr2];
 ```
 
-##### 与解构赋值一起使用
 ```js
+// 与解构赋值一起使用
 // 扩展运算符必须是最后一个元素
+
 let [x, y, ...z] = [1, 2, 4, 8, 9, 0];
 console.log(x, y, z);
 // 1, 2, [4, 8, 9, 0];
 ```
 
-##### 把伪数组转换成真正的数组
 ```js
+// 把伪数组转换成真正的数组
+
 let obj = {
     0: 'a',
     1: 'b',
@@ -1417,18 +1465,14 @@ let obj = {
 }
 
 console.log(Array.from(obj));
-```
-
-```js
 let obj = {
     length: 3,
 }
 
 console.log(Array.from(obj)); 
 // [undefined, undefined, undefined]
+
 ```
-
-
 
 # promise
 
