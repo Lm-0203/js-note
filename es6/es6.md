@@ -1218,6 +1218,8 @@ const dog1 = new Dog("旺财", 3, "公"); // new Dog 的时候在 Animal 的 con
 # 解构
 
 ES6允许按照一定的模式，从数组和对象中，对变量进行赋值，这被称为解构（Destructuring）
+使用ES6的一种语法规则，将一个对象或数组的某个属性提取到某个变量中
+
 ## 数组的解构赋值
 1. 有顺序，按照对应的位置对数组进行赋值
 2. 只要某种数据结构具有Iterator接口，都可以采用数组形式的解构赋值
@@ -1302,19 +1304,6 @@ let [x, y, z] = new Set(['a', 'b', 'c']); //返回一个对象
 
 ##### 默认值可以是其他变量，但是该变量必须已经声明
 
-
-
-## 对象的解构赋值
-变量必须与属性同名，才能取到正确的值
-
-```js
-const obj = {
-    name: "cheng",
-    age: 18,
-};
-console.log(...obj); // Spread syntax requires ...iterable[Symbol.iterator] to be a function
-```
-
 ## 应用
 1. 变量交换
 2. 从函数返回多个值
@@ -1353,6 +1342,34 @@ let {0: first, [arr.length - 1]: last} = arr;
 ```js
 let [x, y, z] = new Set(['a', 'b', 'c']); //返回一个对象
 // x  'a'
+```
+
+## 对象的解构赋值
+变量必须与属性同名，才能取到正确的值
+
+```js
+const obj = {
+    name: "cheng",
+    age: 18,
+};
+console.log(...obj); // Spread syntax requires ...iterable[Symbol.iterator] to be a function
+```
+
+```js
+const user = {
+  name: "kevin",
+  age: 11,
+  sex: "男",
+  address: {
+    province: "四川",
+    city: "成都",
+  },
+};
+// 先定义4个变量：name、age、gender、address
+// 再从对象user中读取同名属性赋值（其中gender读取的是sex属性）
+let { name: objName, age, sex: gender = 123, address: { province } } = user;
+
+console.log(objName, age, gender, address, );
 ```
 
 # 数组的扩展
