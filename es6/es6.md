@@ -1560,131 +1560,129 @@ ES6 延续了 ES5 的思想：减少魔法，暴露内部实现！
 
 1. Symbol.hasInstance
 
-该符号用于定义构造函数的静态成员，它将影响 instanceof 的判定
+    该符号用于定义构造函数的静态成员，它将影响 instanceof 的判定
 
-```js
+    ```js
+    obj instanceof A
 
-obj instanceof A
+    //等效于
 
-//等效于
+    A[Symbol.hasInstance](obj) // Function.prototype[Symbol.hasInstance]
+    ```
 
-A[Symbol.hasInstance](obj) // Function.prototype[Symbol.hasInstance]
+    ```js
+    function A() {}
 
-```
+    Object.defineProperty(A, Symbol.hasInstance, {
+        value: function () {
+            return false;
+        },
+    });
 
-```js
-function A() {}
-
-Object.defineProperty(A, Symbol.hasInstance, {
-    value: function () {
-        return false;
-    },
-});
-
-const obj = new A();
-console.log(obj instanceof A); // false
-console.log(A[Symbol.hasInstance](obj)); // false
-```
+    const obj = new A();
+    console.log(obj instanceof A); // false
+    console.log(A[Symbol.hasInstance](obj)); // false
+    ```
 
 2. [扩展] Symbol.isConcatSpreadable
 
-该知名符号会影响数组的 concat 方法
+    该知名符号会影响数组的 concat 方法
 
-```js
-const arr = [3];
+    ```js
+    const arr = [3];
 
-const arr2 = arr.concat(56, [3, 4, 5]);
+    const arr2 = arr.concat(56, [3, 4, 5]);
 
-console.log(arr2); // [3, 56, 3, 4, 5]
-```
+    console.log(arr2); // [3, 56, 3, 4, 5]
+    ```
 
-```js
-const arr = [3];
+    ```js
+    const arr = [3];
 
-const arr2 = [4, 5, 6];
+    const arr2 = [4, 5, 6];
 
-arr2[Symbol.isConcatSpreadable] = false;
+    arr2[Symbol.isConcatSpreadable] = false;
 
-console.log(arr.concat(arr2)); // [3, [4, 5, 6]]
-```
+    console.log(arr.concat(arr2)); // [3, [4, 5, 6]]
+    ```
 
-```js
-const arr = [3];
+    ```js
+    const arr = [3];
 
-const obj = {
-    0: 4,
-    1: 5,
-    length: 2,
-    [Symbol.isConcatSpreadable]: true,
-}
+    const obj = {
+        0: 4,
+        1: 5,
+        length: 2,
+        [Symbol.isConcatSpreadable]: true,
+    }
 
-console.log(arr.concat(obj));
-```
+    console.log(arr.concat(obj));
+    ```
 
 3. [扩展] Symbol.toPrimitive
 
-该知名符号会影响类型转换的结果
+    该知名符号会影响类型转换的结果
 
-```js
-const obj = {
-    a: 1,
-    b: 2,
-}
-
-console.log(obj + 123); // [object Object]123
-
-const obj2 = {
-    a: 1,
-    b: 2,
-    [Symbol.toPrimitive]: function () {
-        return 2;
-    },
-};
-
-console.log(obj2 + 123); // 125
-```
-
-```js
-class Temperature {
-    constructor(degree) {
-        this.degree = degree;
+    ```js
+    const obj = {
+        a: 1,
+        b: 2,
     }
 
-    [Symbol.toPrimitive](type) {
-        if (type === "default") {
-            return this.degree + "摄氏度";
-        } else if (type === "number") {
-            return this.degree;
-        } else if (type === "string") {
-            return this.degree + "℃";
+    console.log(obj + 123); // [object Object]123
+
+    const obj2 = {
+        a: 1,
+        b: 2,
+        [Symbol.toPrimitive]: function () {
+            return 2;
+        },
+    };
+
+    console.log(obj2 + 123); // 125
+    ```
+
+    ```js
+    class Temperature {
+        constructor(degree) {
+            this.degree = degree;
+        }
+
+        [Symbol.toPrimitive](type) {
+            if (type === "default") {
+                return this.degree + "摄氏度";
+            } else if (type === "number") {
+                return this.degree;
+            } else if (type === "string") {
+                return this.degree + "℃";
+            }
         }
     }
-}
 
-const t = new Temperature(30);
+    const t = new Temperature(30);
 
-console.log(t + "!"); // 30摄氏度
-console.log(t / 2); // 15
-console.log(String(t)); // 30℃
-```
+    console.log(t + "!"); // 30摄氏度
+    console.log(t / 2); // 15
+    console.log(String(t)); // 30℃
+    ```
 
 4. [扩展] Symbol.toStringTag
 
-该知名符号会影响 Object.prototype.toString 的返回值
+    该知名符号会影响 Object.prototype.toString 的返回值
 
-```js
-class Person {
+    ```js
+    class Person {
 
-    [Symbol.toStringTag] = "Person"
-}
+        [Symbol.toStringTag] = "Person"
+    }
 
-const p = new Person();
+    const p = new Person();
 
-const arr = [32424, 45654, 32]
+    const arr = [32424, 45654, 32]
 
-console.log(Object.prototype.toString.apply(p));
-console.log(Object.prototype.toString.apply(arr))
-```
+    console.log(Object.prototype.toString.apply(p));
+    console.log(Object.prototype.toString.apply(arr))
+    ```
 
 5. 其他知名符号
 
