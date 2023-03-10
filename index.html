@@ -7,17 +7,26 @@
     <title>Document</title>
   </head>
   <body>
+    <form action="" method="post" enctype="multipart/form-data">
+      <input type="file" id="avatar" name="imagefile" />
+      <button>tijoa</button>
+    </form>
+
     <script>
-      class Person {
-        [Symbol.toStringTag] = "Person";
+      function upload() {
+        const ipt = document.getElementById("avatar");
+        const formData = new FormData(); // 构建请求体
+        formData.append("imagefile", ipt.files[0]);
+        console.log(formData);
+        console.log(ipt.files);
+
+        fetch("http://study.yuanjin.tech/api/upload", {
+          method: "post",
+          body: formData, // 把body的值设置为formData，会动把请求头的 content-type 值 设置为 multipart/form-data
+        }).then((res) => {
+          console.log(res);
+        });
       }
-
-      const p = new Person();
-
-      const arr = [32424, 45654, 32];
-
-      console.log(Object.prototype.toString.apply(p));
-      console.log(Object.prototype.toString.apply(arr));
     </script>
   </body>
 </html>
