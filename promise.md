@@ -800,6 +800,257 @@ Promise.race([requestImg(), timeout()])
 |      race       |        顾名思义，返回最先返回执行成功的参数的执行结果        |
 
 
+# 迭代器
+
+## 背景知识
+
+1. 什么是迭代？
+
+从一个数据集合中按照一定的顺序，不断取出数据的过程
+
+2. 迭代和遍历的区别？
+
+迭代强调的是依次取数据，并不保证取多少，也不保证把所有的数据取完
+
+遍历强调的是要把整个数据依次全部取出
+
+3. 迭代器
+
+对迭代过程的封装，在不同的语言中有不同的表现形式，通常为对象
+
+4. 迭代模式
+
+一种设计模式，用于统一迭代过程，并规范了迭代器规格：
+
+- 迭代器应该具有得到下一个数据的能力
+- 迭代器应该具有判断是否还有后续数据的能力
+
+## JS中的迭代器
+
+JS规定，如果一个对象具有next方法，并且该方法返回一个对象，该对象的格式如下：
+
+```js
+{value: 值, done: 是否迭代完成}
+```
+
+```js
+// 这个obj就是一个迭代器
+const obj = {
+    next() {
+        return {
+            value: '',
+            done: true | false,
+        }
+    }
+}
+```
+
+则认为该对象是一个迭代器
+
+含义：
+
+- next方法：用于得到下一个数据
+- 返回的对象
+  - value：下一个数据的值
+  - done：boolean，是否迭代完成
+
+```js
+const arr = [1, 2, 3, 4, 5];
+const iterator = {
+    i: 0, // 当前数组下标
+    next() {
+        const result = {
+            value: arr[this.i++],
+            done: !Boolean(arr[this.i]),
+        };
+        return result;
+    },
+};
+console.log(iterator.next());
+
+// 让迭代器不断的取出下一个数据，直到没有数据位置
+let data = iterator.next();
+while (!data.done) {
+    data = iterator.next();
+    console.log(data.value);
+}
+```
+
+```js
+// 迭代器创建函数  iterator creator
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [6, 7, 8, 9, 10];
+function createIterator(arr) {
+    let i = 0;
+    return {
+        next() {
+            value: arr[i++];
+            done: i >= arr.length;
+        },
+    };
+}
+```
+
+```js
+// 依次得到斐波拉契数列前面n位的值
+// 依次得到斐波拉契数列前面n位的值
+// 1 1 2 3 5 8 13 .....
+
+//创建一个斐波拉契数列的迭代器
+function createFeiboIterator() {
+    let prev1 = 1,
+        prev2 = 1, //当前位置的前1位和前2位
+        n = 1; //当前是第几位
+
+    return {
+        next() {
+        let value;
+        if (n <= 2) {
+            value = 1;
+        } else {
+            value = prev1 + prev2;
+        }
+        const result = {
+            value,
+            done: false,
+        };
+        prev2 = prev1;
+        prev1 = result.value;
+        n++;
+        return result;
+        },
+    };
+}
+
+const iterator = createFeiboIterator();
+```
+
+# 可迭代协议 与 for-of 循环
+
+## 可迭代协议
+
+**概念回顾**
+
+- 迭代器(iterator)：一个具有next方法的对象，next方法返回下一个数据并且能指示是否迭代完成
+- 迭代器创建函数（iterator creator）：一个返回迭代器的函数
+
+**可迭代协议**
+
+ES6规定，如果一个对象(或者是对象的原型链上)具有知名符号属性```Symbol.iterator```，并且属性值是一个迭代器创建函数，则该对象是可迭代的（iterable）
+
+满足**可迭代协议**的对象就是**可迭代对象**
+
+```js
+var obj = {
+    [Symbol.iterator]() {
+        return {
+            next() {
+                return {
+                    value: 1,
+                    done: false,
+                };
+            },
+        };
+    },
+};
+```
+
+数组就是一个可迭代对像，除了数组，很多类数组，伪数组也是可迭代对象
+
+```js
+const arr = [1, 2, 3, 4, 5];
+
+const interator = arr[Symbol.iterator]();
+
+console.log(interator.next());
+```
+
+> 思考：如何知晓一个对象是否是可迭代的？
+> 
+> 思考：如何遍历一个可迭代对象？
+
+```js
+const arr = [1, 2, 3, 4, 5];
+
+const interator = arr[Symbol.iterator]();
+
+let result = interator.next();
+
+while (!result.done) {
+  console.log(result);
+  result = interator.next();
+}
+
+// 用 for of 循环
+for (const item of arr) {
+    console.log(item);
+}
+```
+
+```js
+const obj = {
+    a: 1,
+    b: 2,
+}
+
+const arr = [...obj];
+console.log(arr); // Uncaught TypeError: obj is not iterable
+```
+
+```js
+var obj = {
+    a: 1,
+    b: 2,
+    [Symbol.iterator]() {
+        const keys = Object.keys(this);
+        let i = 0;
+        return {
+            next: () => {
+                const propName = keys[i];
+                const propValue = this[propName];
+                const result = {
+                    value: {
+                        propName,
+                        propValue,
+                    },
+                    done: i >= keys.length,
+                };
+                i++;
+                return result;
+            },
+        };
+    },
+};
+
+const arr = [...obj];
+console.log(arr);
+
+function test(a, b) {
+  console.log(a, b);
+}
+
+test(...obj);
+
+```
+
+
+## for-of 循环
+
+for-of 循环用于遍历可迭代对象，格式如下
+
+```js
+//迭代完成后循环结束
+for(const item of iterable){
+    //iterable：可迭代对象
+    //item：每次迭代得到的数据
+}
+```
+
+## 展开运算符与可迭代对象
+
+展开运算符可以作用于可迭代对象，这样，就可以轻松的将可迭代对象转换为数组。
+
+
 
 ## Generator、Async/await
 
