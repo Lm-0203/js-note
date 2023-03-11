@@ -892,11 +892,11 @@ function createIterator(arr) {
 ```
 
 ```js
-// 依次得到斐波拉契数列前面n位的值
-// 依次得到斐波拉契数列前面n位的值
+// 依次得到斐波那契数列前面n位的值
+// 依次得到斐波那契数列前面n位的值
 // 1 1 2 3 5 8 13 .....
 
-//创建一个斐波拉契数列的迭代器
+//创建一个斐波那契数列的迭代器
 function createFeiboIterator() {
     let prev1 = 1,
         prev2 = 1, //当前位置的前1位和前2位
@@ -982,8 +982,17 @@ while (!result.done) {
 }
 
 // 用 for of 循环
+// for-of 循环用于遍历可迭代对象，格式如下
 for (const item of arr) {
     console.log(item);
+}
+```
+
+```js
+//迭代完成后循环结束
+for(const item of iterable){
+    //iterable：可迭代对象
+    //item：每次迭代得到的数据
 }
 ```
 
@@ -998,6 +1007,8 @@ console.log(arr); // Uncaught TypeError: obj is not iterable
 ```
 
 ```js
+// 展开运算符与可迭代对象
+// 展开运算符可以作用于可迭代对象，这样，就可以轻松的将可迭代对象转换为数组。
 var obj = {
     a: 1,
     b: 2,
@@ -1033,32 +1044,21 @@ test(...obj);
 
 ```
 
+# 生成器 Generator、Async/await
 
-## for-of 循环
+## 生成器 (Generator)
 
-for-of 循环用于遍历可迭代对象，格式如下
+1. 什么是生成器？
 
-```js
-//迭代完成后循环结束
-for(const item of iterable){
-    //iterable：可迭代对象
-    //item：每次迭代得到的数据
-}
-```
-
-## 展开运算符与可迭代对象
-
-展开运算符可以作用于可迭代对象，这样，就可以轻松的将可迭代对象转换为数组。
-
-
-
-## Generator、Async/await
-
-### Generator
-
-Generator(生成器) 是一个带*号的函数
+生成器是一个通过构造函数Generator创建的对象，生成器既是一个迭代器，同时又是一个可迭代对象
 
 可以配合yield关键字来暂停或者执行函数
+
+2. 如何创建生成器？
+
+生成器的创建，必须使用生成器函数（Generator Function）。生成器函数内部会自动调用**构造函数Generator**
+
+3. 如何书写一个生成器函数呢？
 
 ES6 没有规定，`function`关键字与函数名之间的星号，写在哪个位置。这导致下面的写法都能通过。
 
@@ -1071,9 +1071,96 @@ function*foo(x, y) { ··· }
 
 由于 Generator 函数仍然是普通函数，所以一般的写法是上面的第三种，即星号紧跟在`function`关键字后面。
 
+```js
+//这是一个生成器函数，该函数一定返回一个生成器
+function* method(){
 
+}
+```
 
-#### 代码实例
+4. 生成器函数内部是如何执行的？
+
+生成器函数内部是为了给生成器的每次迭代提供的数据
+
+每次调用生成器的next方法，将导致生成器函数运行到下一个yield关键字位置
+
+yield是一个关键字，该关键字只能在生成器函数内部使用，表达“产生”一个迭代数据。
+
+yield 也是ES6的新关键字，配合Generator 执行以及暂停
+
+yield关键字最后返回一个迭代器对象
+
+该对象有 value(代表返回值) 和 done(代表是否完成) 属性
+
+```js
+funciton* test() {
+    console.log('test');
+}
+const gen = test(); // test 执行的时候，只是简单的返回一个生成器对象，不会执行函数里面的任何代码，所以不会打印出 'test';
+console.log(gen);
+```
+
+```js
+funciton* test() {
+    // 函数内部是为了给生成器每一次迭代提供数据的。内部代码要迭代过后才运行
+    // 也就是调用next才会运行
+}
+const gen = test(); // test 执行的时候，只是简单的返回一个生成器对象，不会执行函数里面的任何代码，所以不会打印出 'test';
+console.log(gen);
+```
+
+```js
+const arr = [1, 2, 3, 4, 5];
+
+function* createIterator(arr) {
+    for (const item of arr) {
+        yield item;
+    }
+}
+
+const itera = createIterator(arr);
+
+console.log(itera.next());
+console.log(itera.next());
+console.log(itera.next());
+console.log(itera.next());
+console.log(itera.next());
+console.log(itera.next());
+console.log(itera.next());
+console.log(itera.next());
+```
+
+![结果](img/数组迭代.png)
+
+```js
+// 创建一个斐波那契数列生成器函数
+// 1、1、2、3、5、8、13、21、34、55、89、144、233、377、610
+function* create() {
+    let prev1 = 1;
+    let prev2 = 1;
+    let n = 1;
+    while (true) {
+        if (n <= 2) {
+            yield 1;
+        } else {
+            const newValue = prev1 + prev2;
+            prev1 = prev2;
+            prev2 = newValue;
+            yield newValue;
+        }
+        n++;
+    }
+}
+
+const ite = create();
+
+```
+
+![结果](img/斐波那契生成器函数.png)
+
+5. 有哪些需要注意的细节？
+
+1). 生成器函数可以有返回值，返回值出现在第一次done为true时的value属性中，之后done为true时的value属性就是undefined
 
 ```js
 function* gen() {
@@ -1092,18 +1179,24 @@ console.log(g.next()); // {done: true, value: undefined}
 ```
 
 ![generator](./img//generator.png)
+2). 调用生成器的next方法时，可以传递参数，传递的参数会交给yield表达式的返回值
+3). 第一次调用next方法时，传参没有任何意义
 
+```js
+function* test() {
+  let info = yield 1;
+  console.log("info1:", info);
+  info = yield 2;
+  console.log("info2:", info);
+  return 10;
+}
 
+const gen = test();
+```
 
-yield 也是ES6的新关键字，配合Generator 执行以及暂停
+![result](img/next传参.png)
 
-yield关键字最后返回一个迭代器对象
-
-该对象有 value(代表返回值) 和 done(代表是否完成) 属性
-
-
-
-##### 多个Generator配合yield的使用
+4). 在生成器函数内部，可以调用其他生成器函数，但是要注意加上*号
 
 通过调用next() 方法按进度执行
 
@@ -1121,6 +1214,26 @@ function* gen2() {
 
 var g = gen1();
 ```
+
+![result](img/generator函数相互调用.png)
+
+6. 生成器的其他API
+
+- return方法：调用该方法，可以提前结束生成器函数，从而提前让整个迭代过程结束
+- throw方法：调用该方法，可以在生成器中产生一个错误
+
+```js
+function* test() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+const gen = test();
+```
+
+![return](img/生成器return方法.png)
+
 
 
 
@@ -1160,13 +1273,9 @@ isString('123'); // true
 isArray([1, 3, 4]); // true
 ```
 
-
+#### Generator 与 thunk 结合
 
 thunk 函数的基本思路都是接收一定的参数，会生产出定制化的函数，最后使用定制化的函数去完成想要实现的功能
-
-
-
-#### Generator 与 thunk 结合
 
 以文件操作的代码为例
 
@@ -1211,6 +1320,7 @@ run(g);
 
 
 #### Generator 和 Promise 结合
+处理 async await 成为关键字之前的情况
 
 ```js
 const readFilePromise = (filename) => {
@@ -1237,6 +1347,46 @@ function run(gen) {
     next();
 }
 run(g);
+```
+
+```js
+function* task() {
+    const d = yield 1;
+    console.log(d)
+    // //d : 1
+    const resp = yield fetch("http://study.yuanjin.tech/api/local")
+    const result = yield resp.json();
+    console.log(result);
+}
+
+run(task)
+
+function run(generatorFunc) {
+    const generator = generatorFunc();
+    let result = generator.next(); //启动任务（开始迭代）, 得到迭代数据
+    handleResult();
+    //对result进行处理
+    function handleResult() {
+        if (result.done) {
+            return; //迭代完成，不处理
+        }
+        //迭代没有完成，分为两种情况
+        //1. 迭代的数据是一个Promise
+        //2. 迭代的数据是其他数据
+        if (typeof result.value.then === "function") {
+            //1. 迭代的数据是一个Promise
+            //等待Promise完成后，再进行下一次迭代
+            result.value.then(data => {
+                result = generator.next(data)
+                handleResult();
+            })
+        } else {
+            //2. 迭代的数据是其他数据，直接进行下一次迭代
+            result = generator.next(result.value)
+            handleResult();
+        }
+    }
+}
 ```
 
 
