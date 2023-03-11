@@ -2024,6 +2024,215 @@ class MySet {
 }
 ```
 
+# map集合
+
+键值对（key value pair）数据集合的特点：键不可重复
+
+map集合专门用于存储多个键值对数据。
+
+在map出现之前，我们使用的是对象的方式来存储键值对，键是属性名，值是属性值。
+
+使用对象存储有以下问题：
+
+1. 键名只能是字符串或符号
+2. 获取数据的数量不方便
+3. 键名容易跟原型上的名称冲突
+
+
+1. 如何创建map
+
+```js
+new Map(); //创建一个空的map
+new Map(iterable); //创建一个具有初始内容的map，初始内容来自于可迭代对象每一次迭代的结果，但是，它要求每一次迭代的结果必须是一个长度为2的数组，数组第一项表示键，数组的第二项表示值
+```
+
+2. 如何进行后续操作
+
+- size：只读属性，获取当前map中键的数量
+- set(键, 值)：设置一个键值对，键和值可以是任何类型
+  - 如果键不存在，则添加一项
+  - 如果键已存在，则修改它的值
+  - 比较键的方式和set相同
+- get(键): 根据一个键得到对应的值
+- has(键)：判断某个键是否存在
+- delete(键)：删除指定的键
+- clear(): 清空map
+
+
+3. 和数组互相转换
+
+和set一样
+
+4. 遍历
+
+- for-of，每次迭代得到的是一个长度为2的数组
+- forEach，通过回调函数遍历
+  - 参数1：每一项的值
+  - 参数2：每一项的键
+  - 参数3：map本身
+
+```js
+class MyMap {
+    constructor(iterable = []) {
+        //验证是否是可迭代的对象
+        if (typeof iterable[Symbol.iterator] !== "function") {
+            throw new TypeError(`你提供的${iterable}不是一个可迭代的对象`)
+        }
+        this._datas = [];
+        for (const item of iterable) {
+            // item 也得是一个可迭代对象
+            if (typeof item[Symbol.iterator] !== "function") {
+                throw new TypeError(`你提供的${item}不是一个可迭代的对象`);
+            }
+            const iterator = item[Symbol.iterator]();
+            const key = iterator.next().value;
+            const value = iterator.next().value;
+            this.set(key, value);
+        }
+
+    }
+
+    set(key, value) {
+        const obj = this._getObj(key);
+        if (obj) {
+            //修改
+            obj.value = value;
+        }
+        else {
+            this._datas.push({
+                key,
+                value
+            })
+        }
+    }
+
+    get(key) {
+        const item = this._getObj(key);
+        if (item) {
+            return item.value;
+        }
+        return undefined;
+    }
+
+    get size() {
+        return this._datas.length;
+    }
+
+    delete(key) {
+        for (let i = 0; i < this._datas.length; i++) {
+            const element = this._datas[i];
+            if (this.isEqual(element.key, key)) {
+                this._datas.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    clear() {
+        this._datas.length = 0;
+    }
+
+    /**
+     * 根据key值从内部数组中，找到对应的数组项
+     * @param {*} key 
+     */
+    _getObj(key) {
+        for (const item of this._datas) {
+            if (this.isEqual(item.key, key)) {
+                return item;
+            }
+        }
+    }
+
+    has(key) {
+        return this._getObj(key) !== undefined;
+    }
+
+    /**
+     * 判断两个数据是否相等
+     * @param {*} data1 
+     * @param {*} data2 
+     */
+    isEqual(data1, data2) {
+        if (data1 === 0 && data2 === 0) {
+            return true;
+        }
+        return Object.is(data1, data2);
+    }
+
+    *[Symbol.iterator]() {
+        for (const item of this._datas) {
+            yield [item.key, item.value];
+        }
+    }
+
+    forEach(callback) {
+        for (const item of this._datas) {
+            callback(item.value, item.key, this);
+        }
+    }
+}
+```
+
+# WeakSet 和 WeakMap
+
+## WeakSet
+
+使用该集合，可以实现和set一样的功能，不同的是：
+
+1. **它内部存储的对象地址不会影响垃圾回收**
+2. 只能添加对象
+3. 不能遍历（不是可迭代的对象）、没有size属性、没有forEach方法
+
+```js
+let obj = {
+    name: "yj",
+    age: 18
+};
+let obj2 = obj;
+const set = new WeakSet();
+set.add(obj);
+
+obj = null;
+obj2 = null;
+console.log(set)
+```
+
+## WeakMap
+
+类似于map的集合，不同的是：
+
+1. **它的键存储的地址不会影响垃圾回收**
+2. 它的键只能是对象
+3. 不能遍历（不是可迭代的对象）、没有size属性、没有forEach方法
+
+```js
+let obj = {
+    name: 'a',
+    age: 18,
+}
+
+const map = new WeakMap();
+map.set(obj, 234);
+obj = null;
+console.log(map);
+```
+
+```js
+const wmap = new WeakMap();
+let lis = document.querySelectorAll("li");
+for (const li of lis) {
+    wmap.set(li, {
+        id: li.innerHTML,
+        name: `姓名${li.innerHTML}`
+    });
+}
+lis[0].remove();
+lis = null;
+
+console.log(wmap);
+```
 
 # import 和 export
 
