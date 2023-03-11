@@ -1091,7 +1091,7 @@ console.log(g.next()); // {done: true, value: 3}
 console.log(g.next()); // {done: true, value: undefined}
 ```
 
-![image-20210313205500424](C:\Users\Lmljhlb\AppData\Roaming\Typora\typora-user-images\image-20210313205500424.png)
+![generator](./img//generator.png)
 
 
 
