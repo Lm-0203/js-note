@@ -2234,6 +2234,150 @@ lis = null;
 console.log(wmap);
 ```
 
+# 属性描述符
+
+Property Descriptor 属性描述符  是一个普通对象，用于描述一个属性的相关信息
+
+通过```Object.getOwnPropertyDescriptor(对象, 属性名)```可以得到一个对象的某个属性的属性描述符
+
+- value：属性值
+- configurable：该属性的描述符中的信息是否可以修改, true 表示不能修改
+- enumerable：该属性是否可以被枚举, false 是不能被枚举
+- writable：该属性是否可以被重新赋值
+
+> ```Object.getOwnPropertyDescriptors(对象)```可以得到某个对象的所有属性描述符
+
+如果需要为某个对象添加属性时 或 修改属性时， 配置其属性描述符，可以使用下面的代码:
+
+```js
+Object.defineProperty(对象, 属性名, 描述符);
+Object.defineProperties(对象, 多个属性的描述符)
+```
+
+```js
+const obj = {
+    a: 1,
+    b: 2,
+};
+Object.defineProperty(obj, "a", {
+    value: 3,
+    configurable: false,
+    enumerable: false,
+    writable: false
+})
+Object.defineProperties(obj, {
+    a: {
+        value: 3,
+        configurable: false,
+        enumerable: false,
+        writable: false,
+    },
+    b: {
+        value: 10,
+        configurable: false,
+        enumerable: false,
+        writable: false,
+    }
+});
+obj.a = 10; // 如果把configurable设置成ture，就会报这个错：Uncaught TypeError: Cannot redefine property: a at Function.defineProperties
+console.log(obj);
+
+console.log(obj)
+for (const prop in obj) {
+    console.log(prop);
+}
+
+const props = Object.keys(obj)
+console.log(props)
+
+const values = Object.values(obj);
+console.log(values);
+
+const desc = Object.getOwnPropertyDescriptor(obj, "a")
+
+console.log(desc);
+```
+
+
+## 存取器属性
+
+属性描述符中，如果配置了 get 和 set 中的任何一个，则该属性，不再是一个普通属性，而变成了存取器属性。
+
+get 和 set配置均为函数，如果一个属性是存取器属性，则读取该属性时，会运行get方法，将get方法得到的返回值作为属性值；如果给该属性赋值，则会运行set方法。
+
+存取器属性最大的意义，在于可以控制属性的读取和赋值。
+
+```js
+const obj = {
+  b: 2,
+};
+Object.defineProperty(obj, "a", {
+  get() {
+    console.log("运行了属性a的get函数");
+    // 如果直接 return obj.a 会导致无限递归
+    return obj._a;
+  },
+  set(val) {
+    console.log("运行了属性a的set函数", val);
+    // 如果直接 obj.a = val 会导致无线递归
+    obj._a = val;
+  },
+});
+obj.a = 20 + 10; // 相当于运行 set(20 + 10)
+console.log(obj.a); // 相当于运行 get 方法，如果get没有返回值，会得到undefined
+
+obj.a = obj.a + 1; // 相当于 set(obj.a + 1)   set(get() + 1)
+console.log(obj.a);
+```
+
+将对象的属性和元素的内容进行关联，顺带添加一些读取规则
+
+```html
+<body>
+    <p>
+        <span>姓名：</span>
+        <span id="name"></span>
+    </p>
+    <p>
+        <span>年龄：</span>
+        <span id="age"></span>
+    </p>
+    <script>
+        const spanName = document.getElementById("name")
+        const spanAge = document.getElementById("age")
+
+        const user = {}
+
+        Object.defineProperties(user, {
+            name: {
+                get() {
+                    return spanName.innerText;
+                },
+                set(val) {
+                    spanName.innerText = val;
+                }
+            },
+            age: {
+                get() {
+                    return +spanAge.innerText;
+                },
+                set(val) {
+                    if (typeof val !== "number") {
+                        throw new TypeError("年龄必须是一个数字")
+                    }
+                    if (val < 0) {
+                        val = 0;
+                    } else if (val > 200) {
+                        val = 200;
+                    }
+                    spanAge.innerText = val;
+                }
+            }
+        })
+    </script>
+</body>
+```
+
 # import 和 export
 
 es6和node的导出和导入
