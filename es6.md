@@ -2500,6 +2500,91 @@ console.log(proxy.d);
 console.log("a" in proxy);
 ```
 
+# 观察者模式
+
+有一个对象，是观察者，它用于观察另外一个对象的属性值变化，当属性值变化后会收到一个通知，可能会做一些事。
+
+用 defineProperty 实现观察者模式
+有个弊端：会用到两个对象, 造成内存空间的浪费，而且如果target有新增属性，是监测不到的。
+```js
+//创建一个观察者
+function observer(target) {
+    const div = document.getElementById("container");
+    const ob = {};
+    const props = Object.keys(target);
+    for (const prop of props) {
+        Object.defineProperty(ob, prop, {
+            get() {
+                return target[prop];
+            },
+            set(val) {
+                target[prop] = val;
+                render();
+            },
+            // 默认是存取器属性不能被遍历，所以要加 enumerable: true
+            enumerable: true,
+        });
+    }
+    render();
+
+    function render() {
+        let html = "";
+        for (const prop of Object.keys(ob)) {
+            html += `
+                    <p><span>${prop}：</span><span>${ob[prop]}</span></p>
+                `;
+        }
+        div.innerHTML = html;
+    }
+
+    return ob;
+}
+const target = {
+    a: 1,
+    b: 2,
+};
+const obj = observer(target);
+```
+
+用proxy实现观察者模式
+
+```html
+<script>
+    //创建一个观察者
+    function observer(target) {
+        const div = document.getElementById("container");
+        // 代理本身不占内存空间
+        const proxy = new Proxy(target, {
+            set(target, prop, value) {
+                Reflect.set(target, prop, value);
+                // 设置值的时候，重新渲染页面
+                render();
+            },
+            get(target, prop){
+                return Reflect.get(target, prop);
+            }
+        })
+        render();
+
+        function render() {
+            let html = "";
+            for (const prop of Object.keys(target)) {
+                html += `
+                    <p><span>${prop}：</span><span>${target[prop]}</span></p>
+                `;
+            }
+            div.innerHTML = html;
+        }
+
+        return proxy;
+    }
+    const target = {
+        a: 1,
+        b: 2
+    }
+    const obj = observer(target)
+</script>
+```
 
 # import 和 export
 
