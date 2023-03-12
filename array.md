@@ -805,6 +805,85 @@ console.log(arr1, arr2);
   console.log(arr2); // [-6, 14, 6, 22] arr2 也是32位的类型化数组
   ```
 
+# ArrayBuffer
+
+我是真没记住，我看到和字节相关的东西，就乱了
+
+ArrayBuffer：一个对象，用于存储一块固定内存大小的数据。也就是说创建 ArrayBuffer 的时候可以指定占用内存的大小
+
+可以通过属性```byteLength```得到字节数，可以通过方法```slice```得到新的ArrayBuffer
+
+```js
+// new ArrayBuffer(字节数)
+//创建了一个用于存储10个字节的内存空间
+const bf = new ArrayBuffer(10);
+
+const bf2 = bf.slice(3, 5);
+
+console.log(bf, bf2);
+```
+
+![result](img/arrayBuffer.png)
+
+## 读写ArrayBuffer
+
+1. 使用DataView
+
+通常会在需要混用多种存储格式时使用DataView
+
+当时更多的时候，是需要单一格式
+
+```js
+//创建了一个用于存储10个字节的内存空间
+const bf = new ArrayBuffer(10);
+
+// DataView 第一个参数必传, 3 表示偏移量，从下标为3的地方开始操作，4表示长度
+// 注意偏移量和长度不要超过字节范围，不然会报错
+const view = new DataView(bf, 3, 4);
+
+console.log(view);
+
+// 写数据的方式都是以 set 开头
+view.setInt16(1, 3);
+console.log(view);
+
+// 读的话，都是以 get 开头
+console.log(view.getInt16(1));
+```
+
+图片不太能看出结果
+![result](img/detaView.png)
+
+2. 使用类型化数组
+
+实际上，每一个类型化数组都对应一个ArrayBuffer，如果没有手动指定ArrayBuffer，类型化数组创建时，会新建一个ArrayBuffer
+
+```js
+const bf = new ArrayBuffer(10); //10个字节的内存
+
+// 创建类型化数组可以指定同一个ArrayBuffer, 就可以操作同一个内存
+// 是两个不一样的类型化数组，但是操作的是同一个内存
+// 不过通查只用一个数组操作它
+const arr1 = new Int8Array(bf);
+const arr2 = new Int16Array(bf);
+console.log(arr1 === arr2);
+console.log(arr1.buffer === arr2.buffer);
+
+arr1[0] = 10;
+
+console.log(arr1)
+console.log(arr2);
+```
+
+![result](img/类型化数组+arrayBuffer.png)
+
+```js
+const bf = new ArrayBuffer(10); //10个字节的内存
+const arr = new Int16Array(bf);
+arr[0] = 2344; //操作了两个字节
+console.log(arr);
+```
+
 
 
 
