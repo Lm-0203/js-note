@@ -59,32 +59,32 @@ var isNumber = isType('Number');
 
 ## 不改变原数组
 
-|                         方法名                          |       参数aaaaaaaaaaaaaaaaaaaaaaaaaa       |                            返回值                            | 描述                                                         |
-| :-----------------------------------------------------: | :----------------------------------------: | :----------------------------------------------------------: | ------------------------------------------------------------ |
-|                    concat（浅拷贝）                     | 数组和/或值（可省略）（可以有0个或无数个） |                             数组                             |                                                              |
-|                        entries()                        |       没有参数，数组实例或直接量调用       |                   一个新的Array迭代器对象                    | 一个新的 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 迭代器对象。[Array Iterator](http://www.ecma-international.org/ecma-262/6.0/#sec-createarrayiterator) [ɪtə'retɚ]是对象，它的原型（__proto__:Array Iterator）上有一个[next](http://www.ecma-international.org/ecma-262/6.0/#sec-%arrayiteratorprototype%.next)方法，可用用于遍历迭代器取得原数组的[key,value]。 |
-|                         every()                         |                    2个                     |                            布尔值                            | 测试一个数组内的所有元素是否都能通过某个指定函数的测试。它返回一个布尔值。 |
-|                        filter()                         |                    2个                     |                            新数组                            |                                                              |
-|                         find()                          |                    2个                     |             满足测试的第一个值（或`undefined`）              |                                                              |
-|                       findIndex()                       |                    2个                     |              满足测试的第一个元素的索引（或-1）              |                                                              |
-|                         flat()                          |                1个（可选）                 |                             数组                             | 按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。 |
-|                        flatMap()                        |                    2个                     |                            新数组                            | 使用映射函数映射每个元素，然后将结果压缩成一个新数组。它与 [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) 连着深度值为1的 [flat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat) 几乎相同，但 `flatMap` 通常在合并成一种方法的效率稍微高一些。 |
-|                        forEach()                        |                    2个                     |                          undefined                           |                                                              |
-|                       includes()                        |                    2个                     |                            布尔值                            | 该方法的第二个参数表示搜索的起始位置，默认为`0`。如果第二个参数为负数，则表示倒数的位置，如果这时它大于数组长度（比如第二个参数为`-4`，但数组长度为`3`），则会重置为从`0`开始。可识别NaN。如果数组里面有NaN也能被找出来。indexOf() 不行 |
-|                        indexOf()                        |                    2个                     |                        数字类型的下标                        | 会返回下标，下标的数据类型是number                           |
-|                         join()                          |                1个（可选）                 |                            字符串                            |                                                              |
-|                         keys()                          |           没有参数，同entries()            |                   一个新的Array迭代器对象                    |                                                              |
-|        <a href="#lastIndexOf">lastIndexOf()</a>         |                    2个                     |                        数字类型的下标                        | 从第二个参数的位置开始逆向查找，第二个参数的默认值为arr.length - 1; 因为是从后往前查找，所以当第二个参数为负值，并且绝对值大于数组的长度，会返回-1，即数组不会被查找（开始查找的位置，比第零位还要远 ） |
-|                <a href="#map">map()</a>                 |                    2个                     |                         修改后的数组                         | `callback` 每次执行后的返回值（包括 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)）组合起来形成一个新数组。 `callback` 函数只会在有值的索引上被调用；那些从来没被赋过值或者使用 `delete` 删除的索引则不会被调用。 |
-|      <a href="#reduce">reduce()</a> （从左到右加）      |       2个（第一个回调函数有4个参数）       |                      函数累计处理的结果                      | 如果没有提供初始值，则将使用数组中的第一个元素。 在没有初始值的空数组上调用 reduce 将报错。如果不给初始值，要保证数组不为空。数组中被删除的索引或从未被赋值的索引会跳过。 |
-| <a href="#reduceRight">reduceRight()</a> （从右到左加） |                    同上                    |                             同上                             | 如果没有提供初始值，则将使用数组中的最后一个元素。 在没有初始值的空数组上调用 reduce 将报错。如果不给初始值，要保证数组不为空。否则，在空数组上调用 `reduce` 或 `reduceRight` 且未提供初始值（例如 `[].reduce( (acc, cur, idx, arr) => {} )` ）的话，会导致类型错误 `TypeError: reduce of empty array with no initial value`。数组中被删除的索引或从未被赋值的索引会跳过。 |
-|           <a href="#slice">slice()</a>[slaɪs]           |               2个，都是可选                |                  一个含有被提取元素的新数组                  |                                                              |
-|               <a href="#some">some()</a>                |          2个，回调函数 + thisArg           |                            布尔值                            | `callback` 只会在那些”有值“的索引上被调用，不会在那些被删除或从来未被赋值的索引上调用。 |
-|           <a href="#toString">toString()</a>            |                  没有参数                  |                            字符串                            | [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array)对象覆盖了[`Object`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object)的 `toString` 方法。对于数组对象，`toString` 方法连接数组并返回一个字符串，其中包含用逗号分隔的每个数组元素。当一个数组被作为文本值或者进行字符串连接操作时，将会自动调用其 `toString` 方法。 |
-|             <a href="#values">values()</a>              |                  没有参数                  | 一个新的 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 迭代对象。 | **`values()`** 方法返回一个新的 **`Array Iterator`** 对象，该对象包含数组每个索引的值 |
-|                                                         |                                            |                                                              |                                                              |
-|                                                         |                                            |                                                              |                                                              |
-|                                                         |                                            |                                                              |                                                              |
+|                         方法名                          |       参数aaaaaaaaaaaaaaaaaaaaaaaaaa       |                                                 返回值                                                 | 描述                                                                                                                                                                                                                                                                                                                                                                                                       |
+| :-----------------------------------------------------: | :----------------------------------------: | :----------------------------------------------------------------------------------------------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|                    concat（浅拷贝）                     | 数组和/或值（可省略）（可以有0个或无数个） |                                                  数组                                                  |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                        entries()                        |       没有参数，数组实例或直接量调用       |                                        一个新的Array迭代器对象                                         | 一个新的 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 迭代器对象。[Array Iterator](http://www.ecma-international.org/ecma-262/6.0/#sec-createarrayiterator) [ɪtə'retɚ]是对象，它的原型（__proto__:Array Iterator）上有一个[next](http://www.ecma-international.org/ecma-262/6.0/#sec-%arrayiteratorprototype%.next)方法，可用用于遍历迭代器取得原数组的[key,value]。 |
+|                         every()                         |                    2个                     |                                                 布尔值                                                 | 测试一个数组内的所有元素是否都能通过某个指定函数的测试。它返回一个布尔值。                                                                                                                                                                                                                                                                                                                                 |
+|                        filter()                         |                    2个                     |                                                 新数组                                                 |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                         find()                          |                    2个                     |                                  满足测试的第一个值（或`undefined`）                                   |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                       findIndex()                       |                    2个                     |                                   满足测试的第一个元素的索引（或-1）                                   |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                         flat()                          |                1个（可选）                 |                                                  数组                                                  | 按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。                                                                                                                                                                                                                                                                                                               |
+|                        flatMap()                        |                    2个                     |                                                 新数组                                                 | 使用映射函数映射每个元素，然后将结果压缩成一个新数组。它与 [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) 连着深度值为1的 [flat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat) 几乎相同，但 `flatMap` 通常在合并成一种方法的效率稍微高一些。                                                             |
+|                        forEach()                        |                    2个                     |                                               undefined                                                |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                       includes()                        |                    2个                     |                                                 布尔值                                                 | 该方法的第二个参数表示搜索的起始位置，默认为`0`。如果第二个参数为负数，则表示倒数的位置，如果这时它大于数组长度（比如第二个参数为`-4`，但数组长度为`3`），则会重置为从`0`开始。可识别NaN。如果数组里面有NaN也能被找出来。indexOf() 不行                                                                                                                                                                    |
+|                        indexOf()                        |                    2个                     |                                             数字类型的下标                                             | 会返回下标，下标的数据类型是number                                                                                                                                                                                                                                                                                                                                                                         |
+|                         join()                          |                1个（可选）                 |                                                 字符串                                                 |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                         keys()                          |           没有参数，同entries()            |                                        一个新的Array迭代器对象                                         |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|        <a href="#lastIndexOf">lastIndexOf()</a>         |                    2个                     |                                             数字类型的下标                                             | 从第二个参数的位置开始逆向查找，第二个参数的默认值为arr.length - 1; 因为是从后往前查找，所以当第二个参数为负值，并且绝对值大于数组的长度，会返回-1，即数组不会被查找（开始查找的位置，比第零位还要远 ）                                                                                                                                                                                                    |
+|                <a href="#map">map()</a>                 |                    2个                     |                                              修改后的数组                                              | `callback` 每次执行后的返回值（包括 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)）组合起来形成一个新数组。 `callback` 函数只会在有值的索引上被调用；那些从来没被赋过值或者使用 `delete` 删除的索引则不会被调用。                                                                                                                              |
+|      <a href="#reduce">reduce()</a> （从左到右加）      |       2个（第一个回调函数有4个参数）       |                                           函数累计处理的结果                                           | 如果没有提供初始值，则将使用数组中的第一个元素。 在没有初始值的空数组上调用 reduce 将报错。如果不给初始值，要保证数组不为空。数组中被删除的索引或从未被赋值的索引会跳过。                                                                                                                                                                                                                                  |
+| <a href="#reduceRight">reduceRight()</a> （从右到左加） |                    同上                    |                                                  同上                                                  | 如果没有提供初始值，则将使用数组中的最后一个元素。 在没有初始值的空数组上调用 reduce 将报错。如果不给初始值，要保证数组不为空。否则，在空数组上调用 `reduce` 或 `reduceRight` 且未提供初始值（例如 `[].reduce( (acc, cur, idx, arr) => {} )` ）的话，会导致类型错误 `TypeError: reduce of empty array with no initial value`。数组中被删除的索引或从未被赋值的索引会跳过。                                 |
+|           <a href="#slice">slice()</a>[slaɪs]           |               2个，都是可选                |                                       一个含有被提取元素的新数组                                       |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|               <a href="#some">some()</a>                |          2个，回调函数 + thisArg           |                                                 布尔值                                                 | `callback` 只会在那些”有值“的索引上被调用，不会在那些被删除或从来未被赋值的索引上调用。                                                                                                                                                                                                                                                                                                                    |
+|           <a href="#toString">toString()</a>            |                  没有参数                  |                                                 字符串                                                 | [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array)对象覆盖了[`Object`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object)的 `toString` 方法。对于数组对象，`toString` 方法连接数组并返回一个字符串，其中包含用逗号分隔的每个数组元素。当一个数组被作为文本值或者进行字符串连接操作时，将会自动调用其 `toString` 方法。               |
+|             <a href="#values">values()</a>              |                  没有参数                  | 一个新的 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 迭代对象。 | **`values()`** 方法返回一个新的 **`Array Iterator`** 对象，该对象包含数组每个索引的值                                                                                                                                                                                                                                                                                                                      |
+|                                                         |                                            |                                                                                                        |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                                                         |                                            |                                                                                                        |                                                                                                                                                                                                                                                                                                                                                                                                            |
+|                                                         |                                            |                                                                                                        |                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 ### concat
 
@@ -227,7 +227,7 @@ arr1.flatMap(x => x.split(" "));
 ### includes()
 
 返回一个布尔值
-
+用 Object.is 比较
 该方法的第二个参数表示搜索的起始位置，默认为`0`。如果第二个参数为负数，则表示倒数的位置，如果这时它大于数组长度（比如第二个参数为`-4`，但数组长度为`3`），则会重置为从`0`开始。
 
 ```js
@@ -455,17 +455,17 @@ iteraroe.next().value;         // undefined
 
 ## 改变原数组
 
-|              方法名              |         参数          |                            返回值                            |                             描述                             |
-| :------------------------------: | :-------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-|           copyWithin()           |          3个          |                         修改后的数组                         |                                                              |
-|              fill()              |          3个          |                         修改后的数组                         |                                                              |
-|     <a href="#pop">pop()</a>     |       没有参数        | 被删除的元素（当数组为空时返回[`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)） | **`pop()`**方法从数组中 **删除最后**一个元素，并返回该元素的值。此方法更改数组的长度。 |
-|    <a href="#push">push()</a>    |       0个或多个       |                         新数组的长度                         | **`push()`** 方法将一个或多个元素添加到数组的末尾，并返回该数组的新长度。 |
-| <a href="#reverse">reverse()</a> |       没有参数        |                        被反转后的数组                        |                                                              |
-|   <a href="#shift">shift()</a>   |       没有参数        | 被删除的元素（当数组为空时返回[`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)） | **`shift()`**  方法从数组中删除**第一个**元素，并返回该元素的值。此方法更改数组的长度。 |
-|    <a href="#sort">sort()</a>    | 1个（可选）是回调函数 |                        排序后的新数组                        | 参数是用来指定按某种顺序进行排列的函数。如果省略，元素按照转换为的字符串的各个字符的Unicode位点进行排序。如果a-b>0, a 会被放到 b 后面，等于0顺序不变，回调函数返回值大于0才会交换位置 |
-|  <a href="#splice">splice()</a>  |          3个          |    被删除的元素组成的新数组，如果没有删除元素，返回空数组    |                                                              |
-| <a href="#unshift">unshift()</a> |          0+           |                         新数组的长度                         | **`unshift()`** 方法将一个或多个元素添加到数组的**开头**，并返回该数组的**新长度(该**方法修改原有数组**)**。 |
+|              方法名              |         参数          |                                                                  返回值                                                                   |                                                                                         描述                                                                                          |
+| :------------------------------: | :-------------------: | :---------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|           copyWithin()           |          3个          |                                                               修改后的数组                                                                |                                                                                                                                                                                       |
+|              fill()              |          3个          |                                                               修改后的数组                                                                |                                                                                                                                                                                       |
+|     <a href="#pop">pop()</a>     |       没有参数        | 被删除的元素（当数组为空时返回[`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)） |                                                **`pop()`**方法从数组中 **删除最后**一个元素，并返回该元素的值。此方法更改数组的长度。                                                 |
+|    <a href="#push">push()</a>    |       0个或多个       |                                                               新数组的长度                                                                |                                                       **`push()`** 方法将一个或多个元素添加到数组的末尾，并返回该数组的新长度。                                                       |
+| <a href="#reverse">reverse()</a> |       没有参数        |                                                              被反转后的数组                                                               |                                                                                                                                                                                       |
+|   <a href="#shift">shift()</a>   |       没有参数        | 被删除的元素（当数组为空时返回[`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)） |                                                **`shift()`**  方法从数组中删除**第一个**元素，并返回该元素的值。此方法更改数组的长度。                                                |
+|    <a href="#sort">sort()</a>    | 1个（可选）是回调函数 |                                                              排序后的新数组                                                               | 参数是用来指定按某种顺序进行排列的函数。如果省略，元素按照转换为的字符串的各个字符的Unicode位点进行排序。如果a-b>0, a 会被放到 b 后面，等于0顺序不变，回调函数返回值大于0才会交换位置 |
+|  <a href="#splice">splice()</a>  |          3个          |                                          被删除的元素组成的新数组，如果没有删除元素，返回空数组                                           |                                                                                                                                                                                       |
+| <a href="#unshift">unshift()</a> |          0+           |                                                               新数组的长度                                                                |                                     **`unshift()`** 方法将一个或多个元素添加到数组的**开头**，并返回该数组的**新长度(该**方法修改原有数组**)**。                                      |
 
 
 
@@ -473,9 +473,23 @@ iteraroe.next().value;         // undefined
 
 有三个参数
 
-+ target： 复制序列到该为，如果是负数，从末尾开始计算（最后一位是-1）
++ target： 复制序列到该位，如果是负数，从末尾开始计算（最后一位是-1）
 + start： 开始复制元素的起始位置，如果是负数，从末尾开始计算（最后一位是-1）
 + end：开始复制元素的结束位置，如果是负数，从末尾开始计算（最后一位是-1）
+
+```js
+const arr1 = [1, 2, 3, 4, 5, 6];
+//从下标2开始，改变数组的数据，数据来自于下标0位置开始
+arr.copyWithin(2); // [1, 2, 1, 2, 3, 4]
+console.log(arr1);
+const arr2 = [1, 2, 3, 4, 5, 6];
+//从下标2开始，改变数组的数据，数据来自于下标1位置开始
+arr.copyWithin(2, 1); // [1, 2, 2, 3, 4, 5]
+console.log(arr2);
+const arr3 = [1, 2, 3, 4, 5, 6];
+arr.copyWithin(2, 1, 3); // [1, 2, 2, 3, 5, 6]
+console.log(arr3)
+```
 
 ### fill()
 
@@ -627,61 +641,6 @@ Array(1, 2, 3);    // [1, 2, 3]
 + 返回值： 新的数组
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## 生成数组的几种方法
 
 ### [new Array]()
@@ -767,8 +726,84 @@ var m = [1, 2, 2], n = [2,3,3];
 console.log(combine(m,n));                     // [1, 2, 3]
 ```
 
+# 数字存储的前置知识
 
+1. 计算机必须使用固定的位数来存储数字，无论存储的数字是大是小，在内存中占用的空间是固定的。
 
+2. n位的无符号整数能表示的数字是2^n个，取值范围是：0 ~ 2^n - 1
+
+3. n位的有符号整数能表示的数字是2^n个，取值范围是：-2^(n-1) ~ 2^(n-1) - 1
+
+4. 浮点数表示法可以用于表示整数和小数，目前分为两种标准：
+   1. 32位浮点数：又称为单精度浮点数，它用1位表示符号，8位表示阶码，23位表示尾数
+   2. 64位浮点数：又称为双精度浮点数，它用1位表示符号，11位表示阶码，52位表示尾数
+
+5. JS中的所有数字，均使用双精度浮点数保存
+
+# 类型化数组
+
+类型化数组：用于优化多个数字的存储，并且只能用于存储数字
+
+具体分为：
+
+- Int8Array： 8位有符号整数（-128 ~ 127）
+- Uint8Array： 8位无符号整数（0 ~ 255）
+- Int16Array: ...
+- Uint16Array: ...
+- Int32Array: ...
+- Uint32Array: ...
+- Float32Array:
+- Float64Array
+
+1. 如何创建数组
+
+```js
+
+// new 数组构造函数(长度)
+const arr = new Int32Array(10);
+
+console.log(arr.length); // 10
+console.log(arr.byteLength); // 40
+
+// 数组构造函数.of(元素...)
+const arr2 = Uint8Array.of(12, 5, 6, 7);
+console.log(ar2.length); // 4
+console.log(arr2.byteLength); // 4
+
+const arr3 = Int8Array.of(200, 5, 6, 7);
+console.log(arr3); // [-56, 5, 6, 7] 因为有溢出，所以要选择对应的数字取值范围
+
+// 数组构造函数.from(可迭代对象)
+
+// new 数组构造函数(其他类型化数组)
+// 要注意高位数组向低位转换，因为高位数组的取值范围比较大，转换成低位数组的时候可能放不下
+const arr1 = Int32Array.of(35111, 7, 3, 11);
+const arr2 = new Int8Array(arr1);
+console.log(arr1 === arr2); // false
+console.log(arr1, arr2);
+```
+
+2. 得到长度
+
+```js
+数组.length   //得到元素数量
+数组.byteLength //得到占用的字节数
+```
+
+3. 其他的用法跟普通数组一致，但是：
+
+- 不能增加和删除数据，类型化数组的长度固定
+    ```js
+    const arr1 = Int32Array.of(35111, 7, 3, 11);
+    arr1[4] = 1000;
+    console.log(arr1); // [35111, 7, 3, 11]
+    ```
+- 一些返回数组的方法，返回的数组是同类型化的新数组
+  ```js
+  const arr = Int8Array.of(125, 7, 3, 11);
+  const arr2 = arr.map(item => item * 2); // 计算的时候注意不要溢出
+  console.log(arr2); // [-6, 14, 6, 22] arr2 也是32位的类型化数组
+  ```
 
 
 
