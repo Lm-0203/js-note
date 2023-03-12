@@ -2500,6 +2500,69 @@ console.log(proxy.d);
 console.log("a" in proxy);
 ```
 
+proxy构造函数
+也没听明白
+
+```js
+class User {
+
+}
+
+function ConstructorProxy(Class, ...propNames) {
+    return new Proxy(Class, {
+        construct(target, argumentsList) {
+            const obj = Reflect.construct(target, argumentsList)
+            propNames.forEach((name, i) => {
+                obj[name] = argumentsList[i];
+            })
+            return obj;
+        }
+    })
+}
+
+const UserProxy = ConstructorProxy(User, "firstName", "lastName", "age")
+
+const obj = new UserProxy("袁", "进", 18);
+console.log(obj)
+
+class Monster {
+
+}
+
+const MonsterProxy = ConstructorProxy(Monster, "attack", "defence", "hp", "rate", "name")
+
+const m = new MonsterProxy(10, 20, 100, 30, "怪物")
+console.log(m);
+```
+
+可验证的函数参数
+
+```js
+function sum(a, b) {
+    return a + b;
+}
+
+function validatorFunction(func, ...types) {
+    const proxy = new Proxy(func, {
+        apply(target, thisArgument, argumentsList) {
+            types.forEach((t, i) => {
+                const arg = argumentsList[i]
+                if (typeof arg !== t) {
+                    throw new TypeError(`第${i+1}个参数${argumentsList[i]}不满足类型${t}`);
+                }
+            })
+            return Reflect.apply(target, thisArgument, argumentsList);
+        }
+    })
+    return proxy;
+}
+
+const sumProxy = validatorFunction(sum, "number", "number")
+console.log(sumProxy(1, 2))
+```
+
+
+
 # 观察者模式
 
 有一个对象，是观察者，它用于观察另外一个对象的属性值变化，当属性值变化后会收到一个通知，可能会做一些事。
@@ -2585,6 +2648,8 @@ const obj = observer(target);
     const obj = observer(target)
 </script>
 ```
+
+
 
 # import 和 export
 
