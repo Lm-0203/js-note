@@ -2455,6 +2455,52 @@ Reflect是一个内置的JS对象，它提供了一系列方法，可以让开�
     ```
 - 其他API：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect
 
+# Proxy 代理
+
+没听明白其实，总感觉用处不大
+代理：提供了修改底层实现的方式
+
+```js
+
+//代理一个目标对象
+//target：目标对象
+//handler：是一个普通对象，其中可以重写底层实现
+//返回一个代理对象
+new Proxy(target, handler)
+```
+
+```js
+const obj = {
+    a: 1,
+    b: 2
+}
+
+const proxy = new Proxy(obj, {
+    set(target, propertyKey, value) {
+        // console.log(target, propertyKey, value);
+        // target[propertyKey] = value;
+        Reflect.set(target, propertyKey, value);
+    },
+    get(target, propertyKey) {
+        if (Reflect.has(target, propertyKey)) {
+            return Reflect.get(target, propertyKey);
+        } else {
+            return -1;
+        }
+    },
+    has(target, propertyKey) {
+        return false;
+    }
+});
+// console.log(proxy);
+// proxy.a = 10;
+// console.log(proxy.a);
+
+console.log(proxy.d);
+console.log("a" in proxy);
+```
+
+
 # import 和 export
 
 es6和node的导出和导入
