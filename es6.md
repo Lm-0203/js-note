@@ -182,7 +182,7 @@ function f() {
 
     // Uncaught ReferenceError: Cannot access 'a' before initialization 不能在初始化之前使用a
     ```
-    这里有个小细节，报错信息并不是**a没有被定义，而是不能在初始化之前使用**。在底层实现上，let 和 const 声明的变量也会有提升，但是提升后会将其放到**暂时性死去**，如果访问的变量位于暂时性死区，则会报错：“Cannot access 'a' before initialization”。当代码运行到该变量的声明语句时，会将其从暂时性死区中移除。
+    这里有个小细节，报错信息并不是**a没有被定义，而是不能在初始化之前使用**。在底层实现上，let 和 const 声明的变量也会有提升，但是提升后会将其放到**暂时性死区**，如果访问的变量位于暂时性死区，则会报错：“Cannot access 'a' before initialization”。当代码运行到该变量的声明语句时，会将其从暂时性死区中移除。
 + 暂时性死区（temporal dead zone，简称 TDZ）
   + ES6 明确规定，如果区块中存在let和const命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。
   + 有些‘死区’比较隐蔽，不容易被发现
@@ -295,18 +295,18 @@ function f() {
 
 在严格模式下，arguments和形参是脱离的，也就是说arguments的值和形参不统一
 
-只要给函数加上参数默认值，该函数会自动变量严格模式下的规则：arguments和形参脱离
+只要给函数加上参数默认值，该函数会自动变为严格模式下的规则：arguments和形参脱离
 
 所以有默认值的时候，arguments和形参不要混用
 
 + 有默认值
     ```js
     function test(a, b = 1) {
-    console.log("arugments", arugments); // [1, 2]
-    console.log("a:", a, "b:", b); // a: 1 b: 2
-    a = 3;
-    console.log("arugments", arguments[0], arguments[1]); // [1, 2]
-    console.log("a:", a, "b:", b); // a: 3 b: 2
+        console.log("arugments", arugments); // [1, 2]
+        console.log("a:", a, "b:", b); // a: 1 b: 2
+        a = 3;
+        console.log("arugments", arguments[0], arguments[1]); // [1, 2]
+        console.log("a:", a, "b:", b); // a: 3 b: 2
     }
 
     test(1, 2);
@@ -315,11 +315,11 @@ function f() {
 + 没有默认值
     ```js
     function test(a, b) {
-    console.log("arugments", arugments); // [1, 2]
-    console.log("a:", a, "b:", b); // a: 1 b: 2
-    a = 3;
-    console.log("arugments", arguments[0], arguments[1]); // [3, 2]
-    console.log("a:", a, "b:", b); // a: 3 b: 2
+        console.log("arugments", arugments); // [1, 2]
+        console.log("a:", a, "b:", b); // a: 1 b: 2
+        a = 3;
+        console.log("arugments", arguments[0], arguments[1]); // [3, 2]
+        console.log("a:", a, "b:", b); // a: 3 b: 2
     }
 
     test(1, 2);
@@ -359,10 +359,10 @@ ES6的剩余参数专门用于收集末尾的所有参数，将其放置到一�
 
 ```js
 function sum(...rest){
-    console.log(rest); // [1, 2, 3, 4];
+    console.log(rest);
 }
 
-sum(1, 2, 3, 4); // // [1, 2, 3, 4];
+sum(1, 2, 3, 4); // [1, 2, 3, 4];
 sum(); // []
 ```
 
@@ -370,12 +370,13 @@ sum(); // []
 
 1. 一个函数，仅能出现一个剩余参数
 2. 一个函数，如果有剩余参数，剩余参数必须是最后一个参数
+
     ```js
     function sum(a, b, ...rest){
-        console.log(rest); // [3, 4];
+        console.log(rest); 
     }
 
-    sum(1, 2, 3, 4); // // [1, 2, 3, 4];
+    sum(1, 2, 3, 4); // [3, 4];
     sum(1, 2); // []
     sum(); // []
     ```
@@ -406,20 +407,20 @@ function Person(firstName, lastName) {
         throw new Error("该函数没有使用new来调用")
     }
 
-    // 如果不用 new 的话，this 指向widow
+    // 如果不用 new 的话，this 指向遵循普通函数this指向规则
     this.firstName = firstName;
     this.lastName = lastName;
     this.fullName = `${firstName} ${lastName}`;
 }
 
-const p1 = new Person("袁", "进"); // Person
-console.log(p1)
+const p1 = new Person("袁", "进");
+console.log(p1); // Person
 
-const p2 = Person("袁", "进"); // undefined
-console.log(p2);
+const p2 = Person("袁", "进");
+console.log(p2); // undefined
 
-const p3 = Person.call(p1, "袁", "进") // undefined
-console.log(p3);
+const p3 = Person.call(p1, "袁", "进");
+console.log(p3); // undefined
 ```
 
 ## 箭头函数
