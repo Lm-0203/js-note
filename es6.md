@@ -562,6 +562,7 @@ obj1.abc();
 
 + 最明显的区别，箭头函数可以没有function关键字定义，可以省略function
 + 箭头函数中，不存在this、arguments、new.target，如果使用了，则使用的是函数外层的对应的this、arguments、new.target
+
     ```js
     const obj = {
         method: function () {
@@ -581,7 +582,7 @@ obj1.abc();
 + 因为箭头函数没有自己的this，所以当然不能用call bind apply这些方法改变this指向
 + 箭头函数是函数表达式，理论上，任何使用函数表达式的场景，都可以使用箭头函数。普通函数有函数声明，也有函数表达式
 + 箭头函数体内的 this 对象，就是函数定义时所在的对象，而不是使用时所在的对象
-  + 在普通函数中，this的指向是可变的，但是在箭头函数中，它是固定的
+  + 在普通函数中，this 的指向是可变的，但是在箭头函数中，它是固定的
   + 箭头函数绑定了父级作用域的上下文。箭头函数中的this指向函数定义时所在的对象，箭头函数的this指向固定化，不是因为箭头函数内部有绑定this的机制，是因为箭头函数根本没有自己的this。导致内部的this就是外层代码块的this。正是因为它没有this，所以就不能被当做构造函数
 
     script 标签相当于一个代码块，this指向window，所以打印出来的是window对象
@@ -618,7 +619,7 @@ obj1.abc();
     
         fn.call({id:3})(); // 打印出来{id: 3}
         fn()(); // 打印出来window对象
-    <script>
+    </script>
     ```
 
 # 对象
@@ -827,7 +828,7 @@ obj1.abc();
 3. 默认情况下，构造函数仍然可以被当作普通函数使用
    
     ```js
-    //面向对象中，将 下面对一个对象的所有成员的定义，统称为类
+    //面向对象中，将下面对一个对象的所有成员的定义，统称为类
 
     //构造函数  构造器
     function Animal(type, name, age, sex) {
@@ -849,10 +850,8 @@ obj1.abc();
     a.print();
 
     // 原型成员可以被枚举
-    // 使用for-in循环，返回的是所有能够通过对象访问的、可枚举的属性，其中既包括存在于实例中的属性，又包括存在于原型中的属性。屏蔽了原型中不可枚举属性的实例属性也会在for-in循环中返回。
-    // for-in循环会遍历原型链上可枚举的所有属性。屏蔽了原型中不可枚举属性的实例属性也会在for-in循环中返回。
-    // 如果想要只遍历实例对象的属性，不遍历原型链中的属性，可以使用hasOwnProperty 方法过滤一下。
-    // 属性的可枚举性和所有权 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
+    // for in 循环只遍历可枚举属性，包括原型链上的可枚举属性
+    // https://segmentfault.com/a/1190000022348279
     for (const prop in a) {
         console.log(prop) // type name age sex print
     }
@@ -927,8 +926,7 @@ obj1.abc();
             }
             if (age < 0) {
                 age = 0;
-            }
-            else if (age > 1000) {
+            } else if (age > 1000) {
                 age = 1000;
             }
             this._age = age;
@@ -1015,15 +1013,25 @@ obj1.abc();
         print2() {
             console.log(this.a);
         }
+        print3() {
+            console.log(this.a);
+        }
+        print4 = () => {
+            console.log(this.a);
+        }
     }
 
     const t1 = new Test();
     const p1 = t1.print;
-    const p2 = t1.print2;
+    const p2 = t1.print2; // const 声明，p2 不会绑定在window上面
+    var p3 = t1.print3;
+    var p4 = t1.print4;
     t1.print(); // 123
     t1.print2(); // 123
     p1(); // 123
     p2(); // 报错 Cannot read properties of undefined (reading 'a') this 指向undefiend 但是我不知道为什么this会是undefined
+    p3(); // 报错 Cannot read properties of undefined (reading 'a') this 指向undefiend 但是我不知道为什么this会是undefined
+    p4(); // 123
     const t2 = new Test();
     console.log(t1.print === t2.print); // false
     console.log(t1.print2 === t2.print2) // ture
@@ -1221,7 +1229,7 @@ const dog1 = new Dog("旺财", 3, "公"); // new Dog 的时候在 Animal 的 con
 ES6允许按照一定的模式，从数组和对象中，对变量进行赋值，这被称为解构（Destructuring）
 使用ES6的一种语法规则，将一个对象或数组的某个属性提取到某个变量中
 
-解构赋值允许指定默认值，变量的值全等于===undefined，默认值生效，默认值可以是其他变量，但是该变量必须已经声明
+解构赋值允许指定默认值，变量的值全等于===undefined时，默认值生效，默认值可以是其他变量，但是该变量必须已经声明
 
 ## 数组的解构赋值
 1. 有顺序，按照对应的位置对数组进行赋值
@@ -1253,7 +1261,7 @@ let [a, [b], d] = [1, [2, 3], 4];
 let [a, b, c] = [1, 2, 3];
 
 let [x, , y] = [1, 2, 3];
-// x  --> 1   y --> 3
+// x -> 1   y -> 3
 
 let [head, ...tail] = [1, 2, 3, 4];
 // head  1
@@ -1296,7 +1304,7 @@ let [unde] = undefined;
 let [kong] = null;
 let [obj] = {};
 
-// 前五个不具备Iterator接口，最后一个表达式本身不具备Iterator接口（为什么对象不具备Iterator接口）
+// 前五个不具备Iterator接口，最后一个表达式本身不具备Iterator接口
 ```
 
 ```js
@@ -1345,7 +1353,8 @@ const user = {
 // 再从对象user中读取同名属性赋值（其中gender读取的是sex属性）
 let { name: objName, age, sex: gender = 123, address: { province } } = user;
 
-console.log(objName, age, gender, address, );
+console.log(objName, age, gender, province); // 如果没有给sex赋值，gender的值就是123
+console.log(address); // Uncaught RefrerenceError: address is not defined
 ```
 
 ```js
@@ -1617,7 +1626,7 @@ ES6 延续了 ES5 的思想：减少魔法，暴露内部实现！
         [Symbol.isConcatSpreadable]: true,
     }
 
-    console.log(arr.concat(obj));
+    console.log(arr.concat(obj)); // [3, 4, 5]
     ```
 
 3. [扩展] Symbol.toPrimitive
@@ -2377,7 +2386,7 @@ console.log(obj.a);
                 }
             }
         })
-    </script>
+    </>
 </body>
 ```
 
