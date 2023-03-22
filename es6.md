@@ -2659,6 +2659,197 @@ const obj = observer(target);
 </script>
 ```
 
+# 为什么需要模块化
+
+当前端工程到达一定规模后，就会出现下面的问题：
+
+- 全局变量污染
+
+- 依赖混乱
+
+上面的问题，共同导致了**代码文件难以细分**
+
+模块化就是为了解决上面两个问题出现的
+
+模块化出现后，我们就可以把臃肿的代码细分到各个小文件中，便于后期维护管理
+
+# 前端模块化标准
+
+前端主要有两大模块化标准：
+
+- CommonJS，简称CMJ，这是一个**社区**规范，出现时间较早，目前仅node环境支持
+- ES Module，简称ESM，这是随着ES6发布的**官方**模块化标准，目前浏览器和新版本node环境均支持
+
+> node环境
+>
+> 下载地址：https://nodejs.org/zh-cn/
+>
+> ![image-20210423130904669](http://mdrs.yuanjin.tech/img/20210423130904.png)
+
+# CommonJS如何实现模块化
+
+node天生支持CommonJS模块化标准
+
+node规定：
+
+1. node中的每个js文件都是一个CMJ模块，通过node命令运行的模块，叫做入口模块
+
+    也就是如果在终端运行 `node index.js` `index.js` 就是入口模块
+
+2. 模块中的所有全局定义的变量、函数，都不会污染到其他模块
+
+
+3. 当一个模块需要给其他模块提供一些变量时，用 `module.exports` 导出
+
+4. 模块可以暴露（导出）一些内容给其他模块使用，需要暴露什么内容，就在模块中给`module.exports`赋值 或者 给`exports`对象添加某个属性
+
+    ```js
+    function isOdd(n) {
+        return n % 2 !== 0;
+    }
+
+    function sum(a, b) {
+        return a + b;
+    }
+
+    module.exports = {
+        isOdd,
+        sum,
+    }
+    ```
+
+    ```js
+    var boy = 'liuyang'
+    exports.boy = boy;
+    ```
+
+5. 一个模块可以导入其他模块，使用函数`require("要导入的模块路径")`即可完成，该函数返回目标模块的导出结果
+
+   1. 导入模块时，可以省略`.js`
+   2. 导入模块时，必须以`./`或`../`开头
+
+    ```js
+    const { isOdd, sum } = require('./math');
+    const math = require('./math');
+    console.log(math.isOdd(3));
+    console.log(isOdd(4));
+    ```
+
+    ```js
+    var { boy, girl } = require('模块路径')
+    ```
+
+6. 模块有缓存。一个模块在被导入时会运行一次，然后它的导出结果会被node缓存起来，后续对该模块导入时，不会重新运行，直接使用缓存结果
+
+   ```js
+    // 多次 require math.js 文件， math.js 文件只会在第一次 require 的时候执行，后面的 require 都是用的第一次 require 结果的缓存
+    require('./math');
+    require('./math');
+    require('./math');
+    require('./math');
+    require('./math');
+   ```
+
+   
+
+# 练习题
+
+## 导入导出练习
+
+按照要求完成下面的模块
+
+**1. 配置模块 config.js**
+
+它需要导出一个对象，规格如下：
+
+```js
+module.exports = {
+    wordDuration: 300, // 打印每个字的时间间隔
+    text: `西风烈，
+        长空雁叫霜晨月。
+        霜晨月，
+        马蹄声碎，
+        喇叭声咽。
+        雄关漫道真如铁，
+        而今迈步从头越。
+        从头越，
+        苍山如海，
+        残阳如血。` // 要打印的文字
+}
+
+```
+
+**2. 延迟模块 delay.js**
+
+该模块的文件名为`delay`，你需要把下面的函数导出：
+
+```js
+/**
+ * 该函数返回一个Promise，它会等待指定的毫秒数，时间到达后该函数完成
+ * @param {number} ms 毫秒数
+ * @returns {Promise}
+ */
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+module.exports = delay;
+
+```
+
+**3. 打印模块 print.js**
+
+该模块负责导出一个打印函数，该函数需要获取当前的打印配置：
+
+```js
+/**
+ * 该函数会做以下两件事：
+ * 1. console.clear() 清空控制台
+ * 2. 读取config.js中的text配置，打印开始位置到index位置的字符
+ * @param {number} index 
+ */
+const config = require('./config.js')
+function print(index){
+    console.clear();
+    const txt = config.text.substring(0, index + 1);
+    console.log(txt);
+    return txt;
+}
+
+module.exports = print;
+```
+
+**4. 主模块 main.js**
+
+这是启动模块，它会利用其它模块，逐字打印出所有的文本，打印每个字的间隔时间在`config.js`中已有配置
+
+```js
+/**
+ * 运行该函数，会逐字打印config.js中的文本
+ * 每个字之间的间隔在config.js已有配置
+ */
+const delay = require('./delay.js');
+const config = require('./config.js');
+const print = require('./print.js');
+
+async function run() {
+    for(let i = 0; i < config.text.length; i ++) {
+        await delay(config.wordDuration);
+        console.log(print(i))
+    }
+}
+
+async function run() {
+  let index = 0;
+  while (index < config.text.length) {
+    print(index); // 打印到这个位置
+    await delay(config.wordDuration);
+    index++;
+  }
+}
+
+run();
+```
 
 
 # import 和 export
@@ -2725,54 +2916,4 @@ import  {boy} from '模块路径'
 `import`后面的`from`指定模块文件的位置，可以是相对路径，也可以是绝对路径，`.js`后缀可以省略。
 
 如果只是模块名，不带有路径，那么必须有配置文件，告诉 JavaScript 引擎该模块的位置。
-
-
-
-## node
-
-**Node** 
-
-1.exports
-
-如：
-
-```
-var boy = 'liuyang'
-exports.boy = boy
-```
-
- 
-
-exports.'接口名' = 对象
-
-导入时，用var ex = require('模块路径')，加载模块就可以用ex.boy调用接口
-
-当需要导入一个模块的多个方法时可以用
-
-```
-var {boy, girl} = require('模块路径')
-```
-
- 
-
-2.module.exports
-
-用于直接导出对象可以直接用
-
-```
-//-------test.js------
-var boy = 'liuyang'
-module.exports = boy
-
-------------main.js-------
-var b = require('./test')
-console.log(b)
-//------结果liuayang----
-```
-
-
-
-# 模块规范
-
-在node.md中
 
