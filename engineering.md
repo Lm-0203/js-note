@@ -514,15 +514,15 @@ npm view 包名 versions
 
 1. 创建一个工程，名为`qr-shower`
 
-2. 使用git初始化
+2. 使用git初始化 `git init`
 
-3. 使用npm初始化
+3. 使用npm初始化 `npm init -y`
 
 4. 添加.gitignore文件，内容如下：
 
    ```
    node_modules
-   .DS_Store
+   .DS_Store // 是苹果电脑才有用的
    ```
 
 5. git提交：init proj
@@ -530,10 +530,21 @@ npm view 包名 versions
 6. 关联并推送到gitee
 
 7. 新建`index.js`
+   ```js
+    // index.js
+    console.log("这里是index.js")
+   ```
 
 8. 设置`package.json`的脚本`start`，用于运行`index.js`命令
+   ```json
+    {
+        "scripts": {
+            "start": "node index.js"
+        }
+    }
+   ```
 
-9. 安装`qrcode`
+9.  安装`qrcode`
 
 10. 编写下面的代码
 
