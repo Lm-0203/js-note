@@ -931,8 +931,6 @@ npm config set registry https://registry.npmjs.org/
 
 # 初始化一个工程
 
-初始化工程之后，就可以准备安装第三方模块了
-
 ```shell
 npm init # 初始化工程，帮助生成 package.json 文件
 npm init -y # 初始化工程，全部使用默认配置生成 package.json 文件
@@ -1137,6 +1135,76 @@ require("a")
 15. 还原依赖
 
 16. 重新运行
+
+# npx
+## 运行本地命令
+
+使用 `npx 命令` 时，它会首先从本地工程的 `node_modules/.bin` 目录中寻找是否有对应的命令
+
+例如：
+
+```shell
+npx webpack
+# 等同于
+node_modules/.bin/webpack
+```
+
+上面这条命令寻找本地工程的 `node_modules/.bin/webpack`
+
+如果将命令配置到 `package.json` 的 `scripts` 中，可以省略 `npx`
+
+```json
+{
+  "scripts": {
+    "build": "webpack",
+  }
+}
+```
+
+如果我在终端输入 `npm run build` 相当于执行 `npx webpack`
+
+
+## 临时下载执行
+
+当执行某个命令时，如果无法从本地工程中找到对应的命令，则会把命令对应的包下载到一个临时目录，下载完成后执行，临时目录中的命令会在适当的时候删除
+
+例如：
+
+当前有一个json文件
+
+```json
+{
+  "a": 1,
+  "b": 2,
+}
+```
+
+想把这个json转换成另一种格式，可以用 prettyjson 工具
+
+```shell
+npx prettyjson 1.json
+```
+
+npx 会下载 `prettyjson` 包到临时目录，这个临时目录根据操作系统不同可能不一样，然后运行该命令，也就是 `prettyjson`，然后等到合适的时间把这个包删掉
+
+如果命令名称和需要下载的包名不一致时，可以手动指定包名
+
+例如 `@vue/cli` 是包名，`vue` 是命令名，两者不一致，可以使用下面的命令
+
+```shell
+# -p @vue/cli -> -p 是 package，指定包的名字是 @vue/cli
+npx -p @vue/cli vue create vue-app
+```
+
+小工具 create-vite
+
+```shell
+npx create-vite proj
+# 等效于
+npm init vite proj3
+```
+
+
 
 ## cross-env
 
