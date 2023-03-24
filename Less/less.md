@@ -49,7 +49,8 @@
    这种方案可以让你在任何终端目录使用`lessc`命令，但不利于版本控制
 
    **方案二：本地安装less**
-
+  
+  `npm i -D less`
    这种方案会把`less`安装到工程目录的`node_modules`中，你无法全局使用`lessc`命令，但可以在当前工程目录中使用`npx lessc`运行该命令
 
    > npx是npm提供的一个小工具，它可以运行当前项目中安装到node_modules的cli命令
@@ -58,16 +59,14 @@
    >
    > 如果可以，应该尽量使用本地安装，而非全局安装
 
-   如果可以，应该尽量使用本地安装，而非全局安装
-
-3. 使用`lessc`命令，对编写的`less`文件进行编译
+1. 使用`lessc`命令，对编写的`less`文件进行编译
 
    ```shell
    # 将 index.less 编译成为 index.css
    lessc index.less index.css
    ```
 
-4. 新建一个页面，引用编译结果`index.css`
+2. 新建一个页面，引用编译结果`index.css`
 
 > 目前，编写less代码会遇到一点小麻烦，就是每次编写后，都需要运行命令进行编译
 >
