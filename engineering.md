@@ -432,6 +432,74 @@ node规定：
 
 基于这种简单有效的思路，出现了AMD和CMD规范，有效的解决了浏览器模块化的问题。
 
+```js
+// require 函数伪代码
+function require(path) {
+  if (该模块有缓存吗) {
+    return 缓存结果;
+  }
+
+  // 如果没有缓存
+  function _run(exports, require, module, __filename, __dirname) {
+    // 模块代码放这里
+    // 因为模块代码都在函数里面运行，所以不会污染全局
+  }
+
+  var module = {
+    exports: {}
+  }
+
+  // 调用函数
+  _run.call(
+    module.exports,
+    module.exports,
+    require,
+    module,
+    模块路径,
+    模块所在目录
+  );
+
+  把 module.exports 加入到缓存中
+  return module.exports;
+}
+```
+
+```js
+// index.js
+console.log(arguments.length) // 5
+```
+
+所以在commonjs中每个模块在运行前，this，exports，module.exports 指向的是同一个地址
+
+题1:
+
+```js
+// m.js
+this.a = 1;
+this.b = 2;
+```
+
+```js
+import m = require('./m.js');
+console.log(m); {a: 1, b: 2};
+```
+
+题2:
+```js
+exports.a = 1;
+module.exports.b = 'b';
+this.c = 'c';
+module.exports = {
+  d: 'd',
+}
+```
+
+```js
+import m = require('./m.js');
+console.log(m); {d: 'd'};
+```
+
+
 ### 练习题
 
 #### 导入导出练习
@@ -724,6 +792,28 @@ setTimeout(async () => {
 }, 1000);
 ```
 
+输出结果
+
+```js
+// a.js
+var count = 1;
+export {count};
+export function increase() {
+  count ++;
+}
+```
+
+```js
+// index.js
+import {count, increase} from './a.js';
+import * as counter from 'a.js';
+const {count: c} = counter;
+increase();
+console.log(count); // 2
+console.log(counter.count); // 2
+console.log(c); // 1
+```
+
 ## ES6模块化的其他细节
 
 1. **尽量导出不可变值**
@@ -759,10 +849,41 @@ export { k, default, a as m2a } from "./m2.js"
 export const r = "m-r"
 ```
 
+4. 符号绑定
+
+```js
+// a.js
+export default 'a';
+export var count = 0;
+export function increase() {
+  count ++;
+}
+```
+
+```js
+// index.js
+import {conut, increase} from './a.js';
+console.log(count); // 0
+increase();
+console.log(count); // 1 -> 说明 a.js 和 index.js 中的 count 用的同一个内存空间，就是同一个值
+```
+
+5. commonjs 和 es6 模块的区别是什么？
+   1. CMJ 是社区标准，ESM 是官方标准
+   2. CMJ 是使用 API 实现的模块化，ESM 是使用新语法实现的模块化
+   3. CMJ 仅在 node 环境中支持，ESM 在各种环境均支持
+   4. CMJ 是动态依赖，同步执行。ESM 既支持动态也支持静态，ESM 的动态依赖是异步执行的
+   5. ESM 导入时有符号绑定，CMJ 只是普通函数调用和赋值
+
+
+6. export 和 export default 的区别是什么？
+   1. export 为普通导出，又叫具名导出，它导出的数据必须带有命名，比如变量定义、函数定义这种带有命名的语句。在导出的模块对象中，命名即为模块对象的属性名。在一个模块中可以有多个具名导出
+   2. export default 为默认导出，在模块对象中名称固定为 default，因此无需命名，通常导出一个表达式或字面量。在一个模块中只能有一个默认导出
+
+
 npm官网：https://www.npmjs.com/
 
 npm全命令：https://docs.npmjs.com/cli/v7/commands
-
 
 # 包概念（package）
 
