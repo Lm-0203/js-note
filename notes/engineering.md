@@ -1224,3 +1224,18 @@ cross-env 使得开发者可以使用单个命令，而不必担心平台正确�
 
 npm i -D cross-env
 
+# ESLint
+
+> ESLint 的官网： https://eslint.org/
+> 民间中文网：https://eslint.bootcss.com/
+
+npm i -D eslink-config-airbnb
+
+安装 eslink-config-airbnb 不用安装 eslink，eslink-config-airbnb 会自动安装 eslint
+
+```json
+{
+    // 表示继承 airbnb 的规则
+    "extends": "airbnb"
+}
+```
