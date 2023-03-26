@@ -229,7 +229,7 @@ if (typeof(a) && -true + (+undefined) + "") {
 !!" " + !!"" - !!false || console.log('你觉得能打印不？');
 
 //不知道分为哪类
-(window.foo || window.foo = "bar"); //报错 优先级的问题，|| 的优先级会比 = 高。就报错
+// (window.foo || window.foo = "bar"); //报错 优先级的问题，|| 的优先级会比 = 高。就报错
 (window.foo || (window.foo = "bar")); //()的优先级高。先赋值。。foo是一个作者自己定义的一个变量名，window.foo初始值是undefined
 console.log(window.foo);
 

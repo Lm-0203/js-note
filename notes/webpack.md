@@ -1,16 +1,13 @@
-![技能树](http://mdrs.yuanjin.tech/img/20210508151156.png)
+# 工程化
 
 > **工程化，为复杂应用而生**
 >
 > 本文为保持简单，牺牲了某些语言的准确性
 
-# 核心
-
 **webpack是用来搭建前端工程的**
 
 它运行在node环境中，它所做的事情，简单来说，就是**打包**
 
-<img src="http://mdrs.yuanjin.tech/img/20210508172954.png" alt="image-20210508172953979" style="zoom:50%;" />
 
 具体来说，就是以某个模块作为入口，根据入口分析出所有模块的依赖关系，然后对各种模块进行合并、压缩，形成最终的打包结果
 
@@ -37,6 +34,16 @@
 通过上面的体验，可以发现，webpack给我们带来了至少以下好处：
 
 - 可以大胆的使用任意模块化标准
+
+    ```js
+    // 比如说 main.js 里面
+    // 这样也是可以被执行打包的
+    import a from 'a.js';
+    import b from 'b.js';
+    require('./index.js');
+    import 'a.png';
+    console.log(a, b);
+    ```
 
   无须担心兼容性问题，因为webpack完成打包后，已经没有了任何模块化语句
 
@@ -74,7 +81,18 @@ webpack会非常暴力的将public目录中的所有文件（除页面模板外�
 
 如果每次修改完代码，都要经过`打包->运行`，未免太过麻烦
 
-在开发阶段，我们可以运行`npm run serve`命令获得更好的打包体验
+在开发阶段，我们可以运行`webpack serve`命令获得更好的打包体验
+
+如果在package.json中配置一下，可以用 `npm run serve`
+
+```json
+{
+    "scripts": {
+        "serve": "webpack serve",
+        "build": "webpack --mode=production"
+    },
+}
+```
 
 该命令会让`webpack`启动一个**开发服务器**。
 
@@ -82,7 +100,7 @@ webpack会非常暴力的将public目录中的所有文件（除页面模板外�
 
 与此同时，当源码发生变动时，webpack会自动重新打包，同时刷新页面以访问到最新的打包结果
 
-![image-20210508194442940](http://mdrs.yuanjin.tech/img/20210508194443.png)
+![image-20210508194442940](./img//20210508194443.png)
 
 # 文件缓存
 
@@ -380,4 +398,5 @@ webpack通过插件（plugin）和加载器（loader）将这些技术整合在�
 ## 回顾和总结2
 
 脱离此文档，能够**说出**整个文档的大致内容
+
 

@@ -5,8 +5,8 @@ let maxItem = maxItemOfArray([3, 5, 12, 5]);
 // 2 检查数组的所有项是否相等
 const areAllEqual = array => array.every(item => item === array[0]);
 
-let check1 = areAllEqual([3, 5, 2]); //false
-let check2 = areAllEqual([3, 3, 3]); //true
+const check1 = areAllEqual([3, 5, 2]); //false
+const check2 = areAllEqual([3, 3, 3]); //true
 
 
 // 3 返回给定数的平均数
@@ -50,11 +50,11 @@ shuffle([5, 4, 3, 6, 20]);
 
 // 9 移除数组中的false值
 const removeFalseValues = arr => arr.fliter(item => item);
-let arr = removeFalseValues([3, 4, false, '', 5, true, undefined, NaN, '']); //[3, 4, 5, true]
+const arr1 = removeFalseValues([3, 4, false, '', 5, true, undefined, NaN, '']); //[3, 4, 5, true]
 
 // 10 去重
 const removeDuplicatedValues = array => [...new Set(array)];
-let arr = removeDuplicatedValues([5, 3, 2, 6, 1, 2, 2, 6]);
+const arr2 = removeDuplicatedValues([5, 3, 2, 6, 1, 2, 2, 6]);
 
 // 11 日期对象返回字符串时间
 const getTimeFormDate = data => data.toTimeString().slice(0, 8);
@@ -83,8 +83,8 @@ const isValidJSON = string => {
     }
 };
 
-let check1 = isValidJSON('{"title": "javascript", "price": 14}'); //true
-let check2 = isValidJSON('{"title": "javascript", "price": 14, subtitle}');
+const check3 = isValidJSON('{"title": "javascript", "price": 14}'); //true
+const check4 = isValidJSON('{"title": "javascript", "price": 14, subtitle}');
 
 // 16 将给定的字符串转换为一个单词数组
 const toWords = (string, pattern = /[^a-zA-Z-]+/) => string.split(pattern).filter(item => item);
@@ -104,5 +104,5 @@ const scrollToTop = () => {
 // 18 这段代码常被用于对一个数字进行有效的验证
 const isValidNumber = n => !isNaN(parseFloat(n)) && isFinite(n) && Number(n) === n;
 
-let check1 = isValidNumber(10); //true;
-let check2 = isValidNumber('a'); //false;
+const check5 = isValidNumber(10); //true;
+const check6 = isValidNumber('a'); //false;
