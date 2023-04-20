@@ -405,8 +405,6 @@ function queue(num) {
 num = [1, 3, 4, 8, 9]
 ```
 
-
-
 ### Promise 的封装
 
 ```js

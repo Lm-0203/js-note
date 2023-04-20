@@ -896,6 +896,7 @@ obj1.abc();
 + getter和setter
 
     Object.defineProperty 可定义某个对象成员属性的读取和设置
+
     使用getter和setter控制的属性，不在原型上, 在实例上，是实例的一个不可枚举属性
 
     ```js

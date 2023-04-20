@@ -1433,7 +1433,7 @@ for (var prop in obj) {
 
 ### 深拷贝 浅拷贝
 
-​		浅拷贝就是如果原对象的第一层属性值的数据类型是原始值，那么原对象和新对象改变这个属性值的时候互不影响。但是，如果第一层属性的属性值是引用类型，原对象和新对象的同名属性共用一个内存，一个变另一个也会跟着变，相互影响
+​	浅拷贝就是如果原对象的第一层属性值的数据类型是原始值，那么原对象和新对象改变这个属性值的时候互不影响。但是，如果第一层属性的属性值是引用类型，原对象和新对象的同名属性共用一个内存，一个变另一个也会跟着变，相互影响
 
 ​	深拷贝是新对象与旧对象分别有各自的内存，二者之间互不影响，修改新对象不会影响旧对象
 
@@ -1628,7 +1628,7 @@ JSON是静态类，类似于Math,系统自带的
 
   笔试可能会考：操作系统 计算机网络 数据结构 数据库
  * 
- ### 事件
+### 事件
 
  #### onclick()  是on+事件类型，事件类型有好多种
 
@@ -2142,11 +2142,11 @@ readyState 属性存有 XMLHttpRequest 的状态信息。
 
 下面是 XMLHttpRequest 对象的三个重要的属性：
 
-| 属性               | 描述                                                         |
-| :----------------- | :----------------------------------------------------------- |
-| onreadystatechange | 存储函数（或函数名），每当 readyState 属性改变时，就会调用该函数。 |
+| 属性               | 描述                                                                                                                                    |
+| :----------------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| onreadystatechange | 存储函数（或函数名），每当 readyState 属性改变时，就会调用该函数。                                                                      |
 | readyState         | 存有 XMLHttpRequest 的状态。从 0 到 4 发生变化。0: 请求未初始化1: 服务器连接已建立2: 请求已接收3: 请求处理中4: 请求已完成，且响应已就绪 |
-| status             | 200: "OK"404: 未找到页面                                     |
+| status             | 200: "OK"404: 未找到页面                                                                                                                |
 
 在 onreadystatechange 事件中，我们规定当服务器响应已做好被处理的准备时所执行的任务。
 
@@ -2285,3 +2285,55 @@ https://www.jianshu.com/p/c8b86b09daf0
 # 严格模式的函数要求
 
 ###### http://www.ruanyifeng.com/blog/2013/01/javascript_strict_mode.html
+
+# 倒计时
+
+```jsx
+import moment from 'moment';
+import { useEffect, useRef, useState } from 'react';
+
+function useCountDown(endDate: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const trialCountDownInterval = useRef<any>(undefined);
+
+  const start = moment();
+  const end = moment(endDate);
+  const duration = useRef(
+    moment.duration(end.diff(start, 'seconds'), 'seconds'),
+  );
+  const [countDown, setCountDown] = useState({
+    asHours: Math.floor(duration.current.asHours()),
+    minutes: duration.current.minutes(),
+    seconds: duration.current.seconds(),
+    days: duration.current.days(),
+  });
+
+  useEffect(() => {
+    trialCountDownInterval.current = setInterval(() => {
+      if (duration.current.asSeconds() <= 0) {
+        clearInterval(trialCountDownInterval?.current);
+        return;
+      }
+      duration.current = moment.duration(
+        end.diff(moment(), 'seconds'),
+        'seconds',
+      );
+      setCountDown({
+        asHours: Math.floor(duration.current.asHours()),
+        minutes: duration.current.minutes(),
+        seconds: duration.current.seconds(),
+        days: duration.current.days(),
+      });
+    }, 1000);
+    return () => clearInterval(trialCountDownInterval?.current);
+  }, []);
+
+  return {
+    duration,
+    countDown,
+    clearCountDown: () => clearInterval(trialCountDownInterval?.current),
+  };
+}
+
+export default useCountDown;
+```
