@@ -1121,6 +1121,28 @@ JSONP的做法是：**当需要跨域请求时，不使用AJAX，转而生成一
 
 JSONP有着明显的缺点，即其只能支持GET请求
 
+```html
+<button>点击获取用户</button>
+<script>
+  function callback(resp) {
+    console.log(resp);
+  }
+
+  function request(url) {
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = function () {
+      script.remove();
+    };
+    document.body.appendChild(script);
+  }
+
+  document.querySelector('button').onclick = function () {
+    request('http://localhost:8000/api/user');
+  };
+</script>
+```
+
 ```js
 const express = require('express');
 
