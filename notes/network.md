@@ -1682,7 +1682,7 @@ CSRF（Cross-site request forgery，跨站请求伪造）
 
 XSS（Cross Site Scripting，跨站脚本攻击），是指攻击者利用站点的漏洞，在表单提交时，在表单内容中加入一些恶意脚本，当其他正常用户浏览页面，而页面中刚好出现攻击者的恶意脚本时，脚本被执行，从而使得页面遭到破坏，或者用户信息被窃取。
 
-<img src="http://mdrs.yuanjin.tech/img/20211102135438.png" alt="image-20211102135438219" style="zoom:50%;" align="left"/>
+<img src="http://mdrs.yuanjin.tech/img/20211102135438.png" alt="image-20211102135438219"/>
 
 # 防御方式
 
@@ -1771,11 +1771,11 @@ XSS（Cross Site Scripting，跨站脚本攻击），是指攻击者利用站点
 
 所以，必须有一个东西，能够将域名转换成IP地址，这个东西就是DNS服务器，翻译成IP地址的过程称之为**域名解析**
 
-<img src="http://mdrs.yuanjin.tech/img/20211027164448.png" alt="image-20211027164448706" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211027164448.png" alt="image-20211027164448706" />
 
 全世界认可的DNS服务器一共有三种，外加一种局部使用的本地DNS服务器，一共四种。
 
-<img src="http://mdrs.yuanjin.tech/img/20211027170039.png" alt="image-20211027170039192" style="zoom:50%;" align="left"/>
+<img src="http://mdrs.yuanjin.tech/img/20211027170039.png" alt="image-20211027170039192" />
 
 为了使得解析速度更快、查询的节点更少，上述每个节点都可能设置高速缓存来加速解析
 
@@ -1804,7 +1804,7 @@ TLS（Transport Layer Security），传输层安全性协议
 
 HTTPS（Hyper Text Transfer Protocol over SecureSocket Layer），建立在SSL协议之上的HTTP协议
 
-<img src="http://mdrs.yuanjin.tech/img/20211025160927.png" alt="image-20211025160927355" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211025160927.png" alt="image-20211025160927355" />
 
 # 面试题
 
@@ -1903,7 +1903,7 @@ end
 
 ## 队头阻塞
 
-<img src="http://mdrs.yuanjin.tech/img/20211027133404.png" alt="image-20211027133404730" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211027133404.png" alt="image-20211027133404730" />
 
 # HTTP1.1
 
@@ -1951,7 +1951,7 @@ HTTP1.1允许在响应到达之前发送下一个请求，这样可以大幅缩�
 
 **但这样做会存在队头阻塞的问题**
 
-<img src="http://mdrs.yuanjin.tech/img/20211026175005.png" alt="image-20211026175005607" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211026175005.png" alt="image-20211026175005607" />
 
 由于多个请求使用的是同一个TCP连接，**服务器必须按照请求到达的顺序进行响应**
 
@@ -1975,7 +1975,7 @@ HTTP1.1允许在响应到达之前发送下一个请求，这样可以大幅缩�
 
 # HTTP2.0
 
-<img src="http://mdrs.yuanjin.tech/img/20211027114358.png" alt="image-20211027114358656" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211027114358.png" alt="image-20211027114358656" />
 
 ## 二进制分帧
 
@@ -1999,7 +1999,7 @@ function b(){}
 
 可以看出，每个帧都带了一个头部，记录了流的ID，这样做就能够准确的知道这一帧数据是属于哪个流的。
 
-<img src="http://mdrs.yuanjin.tech/img/20211027111536.png" alt="image-20211027111536553" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211027111536.png" alt="image-20211027111536553" />
 
 这样就真正的解决了共享TCP连接时的队头阻塞问题，实现了真正的**多路复用**
 
