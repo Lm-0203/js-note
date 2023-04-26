@@ -1535,7 +1535,7 @@ app.68297cd8.css
 
 ## 分段发送
 
-<img src="http://mdrs.yuanjin.tech/img/20211021123315.png" alt="image-20211021123309261" style="zoom:50%;" align="left"/>
+<img src="http://mdrs.yuanjin.tech/img/20211021123315.png" alt="image-20211021123309261" style="zoom:40%;" align="left"/>
 
 ## 可靠传输
 
@@ -1543,7 +1543,7 @@ app.68297cd8.css
 
 为了解决数据报丢失、数据报错乱等问题，TCP协议要求：**接收方收到数据报后，必须对数据报进行确认！**
 
-<img src="http://mdrs.yuanjin.tech/img/20211021124852.png" alt="image-20211021124852569" style="zoom:50%;" align="left"/>
+<img src="http://mdrs.yuanjin.tech/img/20211021124852.png" alt="image-20211021124852569" style="zoom:40%;" align="left"/>
 
 - seq：表示这次数据报的序号
 - ACK：表示这次数据报是一个确认数据报
@@ -1557,7 +1557,7 @@ TCP协议要实现数据的收发，必须要先建立连接
 
 连接的本质其实就是双方各自开辟的一块儿内存空间，空间中主要是数据缓冲区和一些变量
 
-<img src="http://mdrs.yuanjin.tech/img/20211021125708.png" alt="image-20211021125708143" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211021125708.png" alt="image-20211021125708143" style="zoom:40%;" align="left" />
 
 **连接建立的过程需要经过三次数据报传输，因此称之为三次握手**
 
@@ -1571,7 +1571,7 @@ TCP协议要实现数据的收发，必须要先建立连接
 >
 > 结束
 
-<img src="http://mdrs.yuanjin.tech/img/20211021131710.png" alt="image-20211021131710197" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211021131710.png" alt="image-20211021131710197" style="zoom:40%;" align="left" />
 
 # 连接的销毁（四次挥手）
 
@@ -1589,11 +1589,11 @@ TCP协议要实现数据的收发，必须要先建立连接
 >
 > 结束
 
-<img src="http://mdrs.yuanjin.tech/img/20211021143028.png" alt="image-20211021143028167" style="zoom:50%;" align="left"/>
+<img src="http://mdrs.yuanjin.tech/img/20211021143028.png" alt="image-20211021143028167" style="zoom:40%;" align="left"/>
 
 # HTTP和TCP的关系
 
-<img src="http://mdrs.yuanjin.tech/img/20211021134242.png" alt="image-20211021134242311" style="zoom:50%;" align="left"/>
+<img src="http://mdrs.yuanjin.tech/img/20211021134242.png" alt="image-20211021134242311" style="zoom:40%;" align="left"/>
 
 HTTP协议是对内容格式的规定，它**使用**了TCP协议完成消息的可靠传输
 
