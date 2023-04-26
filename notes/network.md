@@ -386,7 +386,7 @@ cookie/sessionStorage/localStorage 的区别
 
 ## 对称加密
 
-<img src="http://mdrs.yuanjin.tech/img/20211021150521.png" alt="image-20211021150521718" style="zoom:50%;" align="left"/>
+<img src="http://mdrs.yuanjin.tech/img/20211021150521.png" alt="image-20211021150521718" />
 
 常见算法：DES、3DES、TDEA、Blowfish、RC5、IDEA
 
@@ -396,7 +396,7 @@ cookie/sessionStorage/localStorage 的区别
 
 ## 非对称加密
 
-<img src="http://mdrs.yuanjin.tech/img/20211021151158.png" alt="image-20211021151158130" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211021151158.png" alt="image-20211021151158130" />
 
 常见算法：RSA、Rabin、DSA、ECC、Elgamal、D-H
 
@@ -406,7 +406,7 @@ cookie/sessionStorage/localStorage 的区别
 
 ## 摘要/哈希/散列
 
-<img src="http://mdrs.yuanjin.tech/img/20211021151642.png" alt="image-20211021151642105" style="zoom:50%;" align="left" />
+<img src="http://mdrs.yuanjin.tech/img/20211021151642.png" alt="image-20211021151642105" />
 
 常见算法：MD4、MD5、SHA1
 
@@ -1551,7 +1551,7 @@ app.68297cd8.css
 
 发送方如果长时间没有收到确认数据报（ACK=1），则会判定丢失或者是错误，然后重发
 
-# 连接的建立（三次握手）
+加密算法的分类# 连接的建立（三次握手）
 
 TCP协议要实现数据的收发，必须要先建立连接
 
