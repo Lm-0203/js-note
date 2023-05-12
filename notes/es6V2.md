@@ -226,7 +226,7 @@ new Promise((resolve, reject) => {
     error => console.log(error)
 );
 
-// 先报错，然后不报错，可以给p1加上then方法就报错了
+// 打印顺序 1 拒绝
 ```
 
 ### then的基本语法
@@ -825,7 +825,9 @@ Promise.race([requestImg(), timeout()])
 
 ## JS中的迭代器
 
-JS规定，如果一个对象具有next方法，并且该方法返回一个对象，该对象的格式如下：
+JS规定，如果一个对象具有next方法，并且该方法返回一个对象，则认为该对象是一个迭代器
+
+该对象的格式如下：
 
 ```js
 {value: 值, done: 是否迭代完成}
@@ -842,8 +844,6 @@ const obj = {
     }
 }
 ```
-
-则认为该对象是一个迭代器
 
 含义：
 
