@@ -902,22 +902,43 @@ function createFeiboIterator() {
 
     return {
         next() {
-        let value;
-        if (n <= 2) {
-            value = 1;
-        } else {
-            value = prev1 + prev2;
-        }
-        const result = {
-            value,
-            done: false,
-        };
-        prev2 = prev1;
-        prev1 = result.value;
-        n++;
-        return result;
+            let value;
+            if (n <= 2) {
+                value = 1;
+            } else {
+                value = prev1 + prev2;
+            }
+            const result = {
+                value,
+                done: false,
+            };
+            prev2 = prev1;
+            prev1 = result.value;
+            n++;
+            return result;
         },
     };
+}
+
+function createFeiboIteratorV2() {
+    let prev1 = 1,
+        prev2 = 1,
+        n = 1;
+    
+    return {
+        next() {
+            let value = 1;
+            if (n > 2) {
+                value = prev1 + prev2;
+                prev1 = prev2;
+                prev2 = value;
+            }
+            return {
+                value,
+                done,
+            }
+        }
+    }
 }
 
 const iterator = createFeiboIterator();
@@ -958,9 +979,9 @@ var obj = {
 ```js
 const arr = [1, 2, 3, 4, 5];
 
-const interator = arr[Symbol.iterator]();
+const iterator = arr[Symbol.iterator]();
 
-console.log(interator.next());
+console.log(iterator.next());
 ```
 
 > 思考：如何知晓一个对象是否是可迭代的？
@@ -970,9 +991,9 @@ console.log(interator.next());
 ```js
 const arr = [1, 2, 3, 4, 5];
 
-const interator = arr[Symbol.iterator]();
+const iterator = arr[Symbol.iterator]();
 
-let result = interator.next();
+let result = iterator.next();
 
 while (!result.done) {
   console.log(result);
@@ -1080,18 +1101,18 @@ function* method(){
 
 生成器函数内部是为了给生成器的每次迭代提供的数据
 
-每次调用生成器的next方法，将导致生成器函数运行到下一个yield关键字位置
+每次调用生成器的 next 方法，将导致生成器函数运行到下一个 yield 关键字位置
 
-yield是一个关键字，该关键字只能在生成器函数内部使用，表达“产生”一个迭代数据。
+yield 是一个关键字，该关键字只能在生成器函数内部使用，表达“产生”一个迭代数据。
 
-yield 也是ES6的新关键字，配合Generator 执行以及暂停
+yield 也是ES6的新关键字，配合 Generator 执行以及暂停
 
-yield关键字最后返回一个迭代器对象
+yield 关键字最后返回一个迭代器对象
 
 该对象有 value(代表返回值) 和 done(代表是否完成) 属性
 
 ```js
-funciton* test() {
+function* test() {
     console.log('test');
 }
 const gen = test(); // test 执行的时候，只是简单的返回一个生成器对象，不会执行函数里面的任何代码，所以不会打印出 'test';
@@ -1099,11 +1120,11 @@ console.log(gen);
 ```
 
 ```js
-funciton* test() {
+function* test() {
     // 函数内部是为了给生成器每一次迭代提供数据的。内部代码要迭代过后才运行
     // 也就是调用next才会运行
 }
-const gen = test(); // test 执行的时候，只是简单的返回一个生成器对象，不会执行函数里面的任何代码，所以不会打印出 'test';
+const gen = test(); // test 执行的时候，只是简单的返回一个生成器对象，不会执行函数里面的任何代码;
 console.log(gen);
 ```
 
@@ -1237,6 +1258,8 @@ const gen = test();
 
 ### thunk 函数
 
+thunk 函数的基本思路都是接收一定的参数，会生产出定制化的函数，最后使用定制化的函数去完成想要实现的功能
+
 用判断数据类型来举例
 
 ```js
@@ -1278,9 +1301,9 @@ thunk 函数的基本思路都是接收一定的参数，会生产出定制化�
 以文件操作的代码为例
 
 ```js
-const readFildThunk = (filename) => {
+const readFileThunk = (filename) => {
     return (callback) => {
-        fs.readFild(filename, callback);
+        fs.readFile(filename, callback);
     }
 }
 
@@ -1292,10 +1315,10 @@ const gen = function* () {
 }
 
 let g = gen();
-g.next().value((err, datal) => {
-    g.next(data1).value(err, data2) => {
+g.next().value((err, data1) => {
+    g.next(data1).value((err, data2) => {
         g.next(data2);
-    }
+    })
 })
 ```
 
