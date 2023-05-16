@@ -2052,6 +2052,8 @@ openDB('stuDB', 1)
 
 但现在有了 *HTML5* 提供的 *File API*，一切都不同了。该接口允许 *JavaScript* 读取本地文件，但并不能直接访问本地文件，而是要依赖于用户行为，比如用户在 *type='file'* 控件上选择了某个文件或者用户将文件拖拽到浏览器上。
 
+https://juejin.cn/post/7233067863500996665
+
 *File Api* 提供了以下几个接口来访问本地文件系统：
 
 - *File*：单个文件，提供了诸如 *name、file size、mimetype* 等只读文件属性

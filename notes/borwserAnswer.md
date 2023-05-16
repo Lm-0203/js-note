@@ -154,7 +154,7 @@
     >
     > 7. 数据存储（data storage）
     >
-    >    用户保存数据到磁盘中。比如 cookie、localstorage 等都是使用的这部分功能。
+    >    用户保存数据到磁盘中。比如 cookie、localStorage 等都是使用的这部分功能。
     
 11. 常见的浏览器内核有哪些?
 
