@@ -93,7 +93,7 @@ module.exports = {
 }
 ```
 
-> 关于cache的更毒品配置参考：https://webpack.docschina.org/configuration/cache/#cache
+> 关于cache的更多配置参考：https://webpack.docschina.org/configuration/cache/#cache
 
 ## 资源模块
 
@@ -105,7 +105,7 @@ module.exports = {
 
 ## 模块联邦
 
-在大型项目中，往往会把项目中的某个区域或功能模块作为单独的徐昂亩开发，最终形成微前端架构
+在大型项目中，往往会把项目中的某个区域或功能模块作为单独的项目开发，最终形成微前端架构
 
 涉及到很多非常棘手的问题：
 + 如何避免公共模块重复打包
@@ -135,8 +135,6 @@ webpack5 尝试着通过 模块联邦 来解决此类问题
 
 
 # 如何在浏览器端实现模块化 {ignore}
-
-[toc]
 
 ## 课程简介
 
@@ -205,8 +203,6 @@ webpack5 尝试着通过 模块联邦 来解决此类问题
 
 
 # webpack的安装和使用 {ignore}
-
-[toc]
 
 > webpack官网：https://www.webpackjs.com/
 > 目前的最新版本：webpack5
@@ -306,8 +302,6 @@ module.exports = {
 
 # devtool 配置 {ignore}
 
-[toc]
-
 ## source map 源码地图
 
 > 本小节的知识与 webpack 无关
@@ -350,8 +344,6 @@ module.exports = {
 ```
 
 # webpack 编译过程 {ignore}
-
-[toc]
 
 webpack 的作用是将源代码编译（构建、打包）成最终代码
 
@@ -914,8 +906,6 @@ module.exports = {
 
 # 区分环境 {ignore}
 
-[toc]
-
 有些时候，我们需要针对生产环境和开发环境分别书写webpack配置
 
 为了更好的适应这种要求，webpack允许配置不仅可以是一个对象，还可以是一个**函数**
@@ -992,8 +982,6 @@ module.exports = function (env) {
 ```
 
 # 其他细节配置 {ignore}
-
-[toc]
 
 ## context
 
